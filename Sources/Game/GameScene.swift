@@ -59,9 +59,9 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
 
         // camera: low & close like SS
         cameraNode.camera = SCNCamera()
-        cameraNode.camera?.fieldOfView = 55
-        cameraNode.position = SCNVector3(0, 3.2, 5.5)
-        cameraNode.look(at: SCNVector3(0, 1.4, -8))
+        cameraNode.camera?.fieldOfView = 58
+        cameraNode.position = SCNVector3(0, 4.0, 6.5)
+        cameraNode.look(at: SCNVector3(0, 1.3, -10))
         scene.rootNode.addChildNode(cameraNode)
 
         // sunlight: warm white directional
@@ -184,9 +184,9 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         invulnT = 0
         camX = 0
         deactivateHoverboard()
-        // SS-style intro: inspector + dog right behind for ~3s
-        chaser.trigger(duration: 3)
-        chaser.node.position = SCNVector3(0, 0, 2.2)
+        // SS-style intro: inspector + dog right behind, drops back + fades over ~3s
+        chaser.trigger(duration: 3, intro: true)
+        chaser.node.position = SCNVector3(0.6, 0, 2.4)
         state.dyingText = nil
         lastTime = 0
     }
@@ -286,7 +286,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         if state.activePowerUps[.superSneakers] == nil && player.sneakersNode != nil {
             player.setSneakersVisual(false)
         }
-        chaser.update(dt: dt, playerX: player.node.position.x)
+        chaser.update(dt: dt, playerX: player.node.position.x, camX: camX)
         if !chaser.active && state.chaserPresent && state.dyingText == nil { state.chaserPresent = false }
 
         state.tick(dt: dt, speed: speed)
@@ -309,13 +309,13 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         if shakeT > 0 {
             shakeT -= dt
             cx += Float.random(in: -0.2...0.2) * Float(shakeT)
-            cameraNode.position.y = 3.2 + Float.random(in: -0.2...0.2) * Float(shakeT)
+            cameraNode.position.y = 4.0 + Float.random(in: -0.2...0.2) * Float(shakeT)
         } else {
-            cameraNode.position.y = 3.2 + player.node.position.y * 0.3
+            cameraNode.position.y = 4.0 + player.node.position.y * 0.3
         }
         cameraNode.position.x = cx
-        let lookY: Float = 1.4 + player.node.position.y * 0.4
-        cameraNode.look(at: SCNVector3(cx, lookY, -8))
+        let lookY: Float = 1.3 + player.node.position.y * 0.4
+        cameraNode.look(at: SCNVector3(cx, lookY, -10))
         if jetpackOn {
             cameraNode.eulerAngles.x -= 0.15 // slight extra down-tilt while flying
         }

@@ -69,13 +69,18 @@ final class Chaser {
         node.addChildNode(dr)
         drone = dr
 
+        // keep it small so it doesn't block the screen (~1.5 tall)
+        node.scale = SCNVector3(0.75, 0.75, 0.75)
         node.isHidden = true
     }
 
-    func trigger(duration: TimeInterval = 6) {
+    private var isIntro = false
+
+    func trigger(duration: TimeInterval = 6, intro: Bool = false) {
         active = true
         timer = 0
         self.duration = duration
+        isIntro = intro
         node.isHidden = false
         node.opacity = 1
     }
@@ -95,14 +100,23 @@ final class Chaser {
         node.position = SCNVector3(playerX, 0, 1.0)
     }
 
-    // follows the player from behind
-    func update(dt: TimeInterval, playerX: Float) {
+    // follows the player from behind; offset x opposite to camera lag
+    func update(dt: TimeInterval, playerX: Float, camX: Float) {
         guard active else { return }
         timer += dt
-        node.position.x += (playerX - node.position.x) * Float(min(1, dt * 8))
-        node.position.z = 2.2 // just behind player
+        let offsetSide: Float = playerX > camX + 0.05 ? 1 : (playerX < camX - 0.05 ? -1 : 1)
+        let targetX = playerX + 0.6 * offsetSide
+        node.position.x += (targetX - node.position.x) * Float(min(1, dt * 8))
+        if isIntro {
+            // drop back from z=2.4 to z=4 while fading over the intro duration
+            let t = Float(min(1, timer / duration))
+            node.position.z = 2.4 + t * 1.6
+            node.opacity = CGFloat(1 - t * t)
+        } else {
+            node.position.z = 2.4 // just behind player, in front of camera
+        }
         drone?.position.y = 1.6 + Float(sin(timer * 5)) * 0.15
-        if timer > duration - 1 {
+        if !isIntro, timer > duration - 1 {
             node.opacity = CGFloat(max(0, 1 - Float(timer - (duration - 1))))
         }
         if timer >= duration { dismiss() }

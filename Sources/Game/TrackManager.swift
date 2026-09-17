@@ -14,6 +14,7 @@ final class TrackManager {
     private var nextSpawnZ: Float = -20   // world-space z of next chunk (starts negative ahead)
     private var distanceSincePowerUp: Float = 0
     private var lastTunnelZ: Float = 0    // world-z where the last tunnel section spawned
+    private var chunksSpawned = 0           // chunks spawned this run
     var onTokenCollected: (() -> Void)?
     var onPowerUp: ((PowerUpKind) -> Void)?
     var onCrash: ((ObstacleKind) -> Void)?
@@ -200,6 +201,14 @@ final class TrackManager {
         o.node.position = SCNVector3(Self.laneX(lane), 0, z)
         parent.addChildNode(o.node)
         obstacles.append(o)
+        // SS: every low barrier gets a coin arc over it
+        if kind == .lowBarrier || kind == .poleBarrier {
+            for i in 0..<7 {
+                let t = Float(i) / 6
+                let y = 0.6 + 2.4 * 4 * t * (1 - t) * 0.55
+                addToken(x: Self.laneX(lane), y: y, z: z + 3.2 - Float(i) * 1.07, into: parent)
+            }
+        }
         return o
     }
 
@@ -208,14 +217,17 @@ final class TrackManager {
         let chunk = SCNNode()
         root.addChildNode(chunk)
         sceneryNodes.append(chunk)
-        let pattern = pickPattern(distance: distance)
+        // first 3 chunks of a run are always coin lines so coins flow immediately
+        let pattern: Pattern = chunksSpawned < 3 ? .coinLine : pickPattern(distance: distance)
+        chunksSpawned += 1
         var chunkLen: Float = 18
+        var coinsAdded = 0
 
         switch pattern {
         case .coinLine:
             let lane = Int.random(in: 0..<3)
-            for i in 0..<Int.random(in: 6...10) { addToken(x: Self.laneX(lane), z: z - Float(i) * 2, into: chunk) }
-            chunkLen = 24
+            for i in 0..<Int.random(in: 8...12) { addToken(x: Self.laneX(lane), z: z - Float(i) * 2, into: chunk); coinsAdded += 1 }
+            chunkLen = 28
         case .coinArc:
             let lane = Int.random(in: 0..<3)
             for i in 0..<7 {
@@ -279,6 +291,13 @@ final class TrackManager {
             chunkLen = 22
         case .empty:
             chunkLen = 14
+        }
+
+        // SS: nearly every non-train chunk carries at least one coin lane
+        let trainPatterns: [Pattern] = [.trainPair, .trainCenter, .movingTrain]
+        if coinsAdded == 0, !trainPatterns.contains(pattern) {
+            let lane = Int.random(in: 0..<3)
+            for i in 0..<6 { addToken(x: Self.laneX(lane), z: z - Float(i) * 2 - 4, into: chunk) }
         }
 
         // occasional power-up
@@ -399,6 +418,7 @@ final class TrackManager {
         obstacles.removeAll()
         collectibles.removeAll()
         nextSpawnZ = -20
+        chunksSpawned = 0
         lastTunnelZ = 0
         distanceSincePowerUp = 0
     }

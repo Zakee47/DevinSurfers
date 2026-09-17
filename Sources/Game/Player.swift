@@ -53,79 +53,79 @@ final class Player {
         let black = Self.material(.black, roughness: 0.3)
         let white = Self.material(.white, roughness: 0.4)
 
-        // body: capsule
-        let body = SCNCapsule(capRadius: 0.32, height: 0.9)
+        // body: elongated otter capsule
+        let body = SCNCapsule(capRadius: 0.42, height: 1.5)
         body.materials = [brown]
         let bodyN = SCNNode(geometry: body)
-        bodyN.position = SCNVector3(0, 0.85, 0)
-        bodyN.rotation = SCNVector4(1, 0, 0, Float.pi / 10)
+        bodyN.position = SCNVector3(0, 1.1, 0)
+        bodyN.rotation = SCNVector4(1, 0, 0, Float.pi / 12)
         bodyNode.addChildNode(bodyN)
 
-        // blue hoodie band around the torso
-        let hoodie = SCNBox(width: 0.7, height: 0.4, length: 0.62, chamferRadius: 0.12)
+        // blue hoodie band around the upper body
+        let hoodie = SCNBox(width: 0.9, height: 0.45, length: 0.78, chamferRadius: 0.15)
         hoodie.materials = [blue]
         let h = SCNNode(geometry: hoodie)
-        h.position = SCNVector3(0, 0.95, 0)
+        h.position = SCNVector3(0, 1.45, 0)
         bodyNode.addChildNode(h)
         // hood bump behind head
-        let hood = SCNSphere(radius: 0.16)
+        let hood = SCNSphere(radius: 0.18)
         hood.materials = [blue]
         let hn = SCNNode(geometry: hood)
         hn.scale = SCNVector3(1, 0.7, 0.8)
-        hn.position = SCNVector3(0, 1.28, -0.15)
+        hn.position = SCNVector3(0, 1.78, -0.28)
         bodyNode.addChildNode(hn)
 
         // belly
-        let belly = SCNSphere(radius: 0.24)
+        let belly = SCNSphere(radius: 0.3)
         belly.materials = [tan]
         let bellyN = SCNNode(geometry: belly)
-        bellyN.scale = SCNVector3(1, 1.2, 0.55)
-        bellyN.position = SCNVector3(0, 0.8, 0.22)
+        bellyN.scale = SCNVector3(1, 1.4, 0.55)
+        bellyN.position = SCNVector3(0, 1.05, 0.3)
         bodyNode.addChildNode(bellyN)
 
-        // head (bigger, SS proportions)
-        let head = SCNSphere(radius: 0.36)
+        // head
+        let head = SCNSphere(radius: 0.45)
         head.materials = [brown]
         let headN = SCNNode(geometry: head)
-        headN.position = SCNVector3(0, 1.52, 0.06)
+        headN.position = SCNVector3(0, 2.15, 0.08)
         bodyNode.addChildNode(headN)
 
-        // muzzle
-        let muzzle = SCNSphere(radius: 0.15)
-        muzzle.materials = [tan]
+        // white muzzle patch
+        let muzzle = SCNSphere(radius: 0.19)
+        muzzle.materials = [white]
         let muzzleN = SCNNode(geometry: muzzle)
         muzzleN.scale = SCNVector3(1.1, 0.8, 1)
-        muzzleN.position = SCNVector3(0, 1.44, 0.36)
+        muzzleN.position = SCNVector3(0, 2.05, 0.45)
         bodyNode.addChildNode(muzzleN)
 
         // nose
-        let nose = SCNSphere(radius: 0.06)
+        let nose = SCNSphere(radius: 0.07)
         nose.materials = [black]
         let noseN = SCNNode(geometry: nose)
-        noseN.position = SCNVector3(0, 1.49, 0.5)
+        noseN.position = SCNVector3(0, 2.12, 0.62)
         bodyNode.addChildNode(noseN)
 
         // eyes
         for side: Float in [-1, 1] {
-            let eye = SCNSphere(radius: 0.05)
+            let eye = SCNSphere(radius: 0.055)
             eye.materials = [black]
             let e = SCNNode(geometry: eye)
-            e.position = SCNVector3(0.14 * side, 1.6, 0.34)
+            e.position = SCNVector3(0.17 * side, 2.28, 0.42)
             bodyNode.addChildNode(e)
-            let glint = SCNSphere(radius: 0.017)
+            let glint = SCNSphere(radius: 0.018)
             glint.materials = [white]
             let g = SCNNode(geometry: glint)
-            g.position = SCNVector3(0.15 * side, 1.61, 0.38)
+            g.position = SCNVector3(0.18 * side, 2.29, 0.47)
             bodyNode.addChildNode(g)
         }
 
-        // ears
+        // small round ears
         for side: Float in [-1, 1] {
-            let ear = SCNSphere(radius: 0.1)
+            let ear = SCNSphere(radius: 0.11)
             ear.materials = [brown]
             let e = SCNNode(geometry: ear)
             e.scale = SCNVector3(1, 1, 0.5)
-            e.position = SCNVector3(0.24 * side, 1.78, 0.0)
+            e.position = SCNVector3(0.3 * side, 2.5, 0.0)
             bodyNode.addChildNode(e)
         }
 
@@ -135,63 +135,63 @@ final class Player {
                 let w = SCNCylinder(radius: 0.006, height: 0.28)
                 w.materials = [white]
                 let wn = SCNNode(geometry: w)
-                wn.position = SCNVector3(0.26 * side, 1.42 + Float(i) * 0.05, 0.36)
+                wn.position = SCNVector3(0.32 * side, 2.02 + Float(i) * 0.05, 0.42)
                 wn.rotation = SCNVector4(0, 0, 1, Float.pi / 2 + Float(side) * 0.2)
                 bodyNode.addChildNode(wn)
             }
         }
 
-        // tail: flat scaled box trailing back
-        let tail = SCNBox(width: 0.18, height: 0.06, length: 0.7, chamferRadius: 0.03)
+        // prominent long flat tail trailing behind
+        let tail = SCNBox(width: 0.35, height: 0.12, length: 0.9, chamferRadius: 0.05)
         tail.materials = [brown]
         let tailN = SCNNode(geometry: tail)
-        tailN.position = SCNVector3(0, 0.45, -0.55)
-        tailN.rotation = SCNVector4(1, 0, 0, -0.4)
+        tailN.position = SCNVector3(0, 0.55, -0.85)
+        tailN.rotation = SCNVector4(1, 0, 0, -0.5)
         bodyNode.addChildNode(tailN)
         tailNode = tailN
 
         // legs (animated) + paw feet
         for side: Float in [-1, 1] {
             let legPivot = SCNNode()
-            legPivot.position = SCNVector3(0.15 * side, 0.55, 0)
-            let leg = SCNCapsule(capRadius: 0.08, height: 0.3)
+            legPivot.position = SCNVector3(0.18 * side, 0.6, 0)
+            let leg = SCNCapsule(capRadius: 0.09, height: 0.35)
             leg.materials = [brown]
             let l = SCNNode(geometry: leg)
-            l.position = SCNVector3(0, -0.15, 0)
+            l.position = SCNVector3(0, -0.18, 0)
             legPivot.addChildNode(l)
-            let paw = SCNSphere(radius: 0.09)
+            let paw = SCNSphere(radius: 0.1)
             paw.materials = [tan]
             let p = SCNNode(geometry: paw)
             p.scale = SCNVector3(1, 0.6, 1.4)
-            p.position = SCNVector3(0, -0.32, 0.05)
+            p.position = SCNVector3(0, -0.38, 0.05)
             legPivot.addChildNode(p)
             bodyNode.addChildNode(legPivot)
             if side < 0 { legL = legPivot } else { legR = legPivot }
         }
 
-        // arms (animated swing)
+        // slim arms hanging at the sides (animated swing)
         for side: Float in [-1, 1] {
             let armPivot = SCNNode()
-            armPivot.position = SCNVector3(0.38 * side, 1.15, 0.05)
-            let arm = SCNCapsule(capRadius: 0.07, height: 0.35)
+            armPivot.position = SCNVector3(0.48 * side, 1.6, 0.05)
+            let arm = SCNCapsule(capRadius: 0.13, height: 0.55)
             arm.materials = [blue]
             let a = SCNNode(geometry: arm)
-            a.position = SCNVector3(0, -0.2, 0)
+            a.position = SCNVector3(0, -0.3, 0)
             armPivot.addChildNode(a)
-            let paw = SCNSphere(radius: 0.07)
+            let paw = SCNSphere(radius: 0.08)
             paw.materials = [tan]
             let p = SCNNode(geometry: paw)
-            p.position = SCNVector3(0, -0.42, 0)
+            p.position = SCNVector3(0, -0.62, 0)
             armPivot.addChildNode(p)
             bodyNode.addChildNode(armPivot)
             if side < 0 { armL = armPivot } else { armR = armPivot }
         }
 
         // blue backpack
-        let pack = SCNBox(width: 0.34, height: 0.42, length: 0.16, chamferRadius: 0.05)
+        let pack = SCNBox(width: 0.4, height: 0.5, length: 0.18, chamferRadius: 0.06)
         pack.materials = [blue]
         let packN = SCNNode(geometry: pack)
-        packN.position = SCNVector3(0, 1.05, -0.35)
+        packN.position = SCNVector3(0, 1.45, -0.48)
         bodyNode.addChildNode(packN)
 
         node.addChildNode(bodyNode)

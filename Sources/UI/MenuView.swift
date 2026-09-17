@@ -33,16 +33,33 @@ struct MenuView: View {
 
                 Spacer()
 
-                Text("RUNNING FROM\nAI SLOP")
-                    .font(.system(size: 42, weight: .black, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(LinearGradient(colors: [devinBlue, gold], startPoint: .leading, endPoint: .trailing))
-                    .shadow(color: .black.opacity(0.6), radius: 8)
-
-                Text("Devin the otter — endless runner")
-                    .font(.subheadline)
-                    .foregroundColor(.white)
-                    .shadow(radius: 4)
+                VStack(spacing: 6) {
+                    ZStack {
+                        // navy stroke layers
+                        ForEach([-2, 2], id: \.self) { dx in
+                            ForEach([-2, 2], id: \.self) { dy in
+                                Text("RUNNING FROM\nAI SLOP")
+                                    .font(.system(size: 42, weight: .black, design: .rounded))
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(Color(red: 0.02, green: 0.05, blue: 0.15).opacity(0.9))
+                                    .offset(x: CGFloat(dx), y: CGFloat(dy))
+                            }
+                        }
+                        Text("RUNNING FROM\nAI SLOP")
+                            .font(.system(size: 42, weight: .black, design: .rounded))
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(LinearGradient(colors: [devinBlue, gold], startPoint: .leading, endPoint: .trailing))
+                            .shadow(color: .black.opacity(0.7), radius: 2, x: 2, y: 3)
+                    }
+                    Text("Devin the otter — endless runner")
+                        .font(.subheadline.bold())
+                        .foregroundColor(.white)
+                        .shadow(color: .black.opacity(0.8), radius: 2, x: 1, y: 2)
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 14)
+                .background(Color(red: 0.02, green: 0.05, blue: 0.15).opacity(0.45))
+                .clipShape(RoundedRectangle(cornerRadius: 18))
 
                 Spacer()
 
