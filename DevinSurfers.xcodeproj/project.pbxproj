@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		058A2BAF0658A108502BA69F /* GameLoopThreadingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */; };
 		07AC4B74CA882C58D5B33BCA /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C992AE015735784F5B5841D /* GameState.swift */; };
 		09D9B48CBA9492615D2E9611 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A55E3B232F081930D0B03B /* GameScene.swift */; };
 		119C0886DBBA877A6BD98582 /* Obstacle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EA5D1EBF003BD5A5901B43 /* Obstacle.swift */; };
@@ -52,6 +53,7 @@
 		77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DevinSurfersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C992AE015735784F5B5841D /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		90CC366FF931C058B0B13338 /* Missions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Missions.swift; sourceTree = "<group>"; };
+		9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoopThreadingTests.swift; sourceTree = "<group>"; };
 		B3CB7BC723295A6D95B2147B /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B40FE6647D50B4844077983C /* Collision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collision.swift; sourceTree = "<group>"; };
 		B541716BC4925CE929787629 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		8AF37F7D11B77CF9B440734C /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */,
 				6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */,
 			);
 			path = Tests;
@@ -236,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				058A2BAF0658A108502BA69F /* GameLoopThreadingTests.swift in Sources */,
 				D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

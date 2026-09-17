@@ -300,6 +300,13 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     // MARK: - Render loop
 
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        DispatchQueue.main.async { [weak self] in
+            self?.update(atTime: time)
+        }
+    }
+
+    private func update(atTime time: TimeInterval) {
+        dispatchPrecondition(condition: .onQueue(.main))
         if state.phase == .menu {
             player.idleUpdate(dt: 1.0 / 60)
             return
