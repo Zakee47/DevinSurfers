@@ -5,7 +5,8 @@ final class Chaser {
     let node = SCNNode()
     private(set) var active = false
     private var timer: TimeInterval = 0
-    let duration: TimeInterval = 6
+    private var duration: TimeInterval = 6
+    private var drone: SCNNode?
 
     init() {
         let gray = SCNMaterial()
@@ -37,7 +38,7 @@ final class Chaser {
         node.addChildNode(e)
 
         // SLOP label
-        let label = Obstacle.aiSlopText(fontSize: 0.3, text: "SLOP")
+        let label = Obstacle.textNode("SLOP", fontSize: 0.3, color: .red)
         label.position = SCNVector3(0, 1.0, 0.26)
         node.addChildNode(label)
 
@@ -50,12 +51,31 @@ final class Chaser {
             node.addChildNode(l)
         }
 
+        // little slop drone hovering alongside
+        let dr = SCNNode()
+        let dbody = SCNSphere(radius: 0.18)
+        let dm = SCNMaterial()
+        dm.diffuse.contents = UIColor(white: 0.5, alpha: 1)
+        dm.metalness.contents = 0.6
+        dbody.materials = [dm]
+        let db = SCNNode(geometry: dbody)
+        dr.addChildNode(db)
+        let deye = SCNSphere(radius: 0.05)
+        deye.materials = [em]
+        let de = SCNNode(geometry: deye)
+        de.position = SCNVector3(0, 0, 0.17)
+        dr.addChildNode(de)
+        dr.position = SCNVector3(1.1, 1.6, 0)
+        node.addChildNode(dr)
+        drone = dr
+
         node.isHidden = true
     }
 
-    func trigger() {
+    func trigger(duration: TimeInterval = 6) {
         active = true
         timer = 0
+        self.duration = duration
         node.isHidden = false
         node.opacity = 1
     }
@@ -65,14 +85,25 @@ final class Chaser {
         node.isHidden = true
     }
 
+    /// moves chaser directly onto the player (death grab)
+    func grabAt(playerX: Float) {
+        active = true
+        timer = 0
+        duration = .infinity
+        node.isHidden = false
+        node.opacity = 1
+        node.position = SCNVector3(playerX, 0, 1.0)
+    }
+
     // follows the player from behind
     func update(dt: TimeInterval, playerX: Float) {
         guard active else { return }
         timer += dt
         node.position.x += (playerX - node.position.x) * Float(min(1, dt * 8))
         node.position.z = 2.2 // just behind player
+        drone?.position.y = 1.6 + Float(sin(timer * 5)) * 0.15
         if timer > duration - 1 {
-            node.opacity = max(0, 1 - (timer - (duration - 1)))
+            node.opacity = CGFloat(max(0, 1 - Float(timer - (duration - 1))))
         }
         if timer >= duration { dismiss() }
     }

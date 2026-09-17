@@ -7,53 +7,68 @@ struct GameOverView: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.75).ignoresSafeArea()
-            VStack(spacing: 18) {
+            Color.black.opacity(0.6).ignoresSafeArea()
+            VStack(spacing: 16) {
                 Text(state.deathCause)
-                    .font(.system(size: 34, weight: .black, design: .rounded))
+                    .font(.system(size: 30, weight: .black, design: .rounded))
                     .foregroundColor(.red)
-                if state.newHighScore {
-                    Text("🏆 NEW HIGH SCORE!")
-                        .font(.headline.bold())
-                        .foregroundColor(gold)
-                }
-                VStack(spacing: 6) {
-                    Text("SCORE").font(.caption).foregroundColor(.white.opacity(0.6))
-                    Text("\(state.score)").font(.system(size: 48, weight: .black)).foregroundColor(.white)
+
+                // results card
+                VStack(spacing: 12) {
+                    if state.newHighScore {
+                        Text("NEW HIGH SCORE!")
+                            .font(.headline.bold())
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 6)
+                            .background(gold)
+                            .clipShape(Capsule())
+                    }
+                    Text("SCORE").font(.caption).foregroundColor(.secondary)
+                    Text("\(state.score)")
+                        .font(.system(size: 48, weight: .black, design: .rounded))
                     HStack(spacing: 24) {
-                        Label("\(state.tokens) tokens", systemImage: "circle.fill")
+                        Label("\(state.tokens)", systemImage: "circle.fill")
                             .foregroundColor(gold)
                         Label("\(Int(state.distance))m", systemImage: "figure.run")
-                            .foregroundColor(.white.opacity(0.8))
-                    }.font(.subheadline)
-                }
+                    }
+                    .font(.subheadline.bold())
 
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("MISSIONS").font(.caption.bold()).foregroundColor(.white.opacity(0.6))
-                    ForEach(state.missions) { m in
-                        HStack {
-                            Text(m.title).font(.caption).foregroundColor(.white.opacity(0.85))
-                            Spacer()
-                            Text("\(m.progress)/\(m.goal)").font(.caption.monospacedDigit()).foregroundColor(gold)
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("MISSIONS").font(.caption.bold()).foregroundColor(.secondary)
+                        ForEach(state.missions) { m in
+                            HStack {
+                                Text(m.title).font(.caption)
+                                Spacer()
+                                Text("\(m.progress)/\(m.goal)").font(.caption.monospacedDigit()).foregroundColor(.secondary)
+                            }
                         }
                     }
                 }
                 .padding()
-                .background(Color.white.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .padding(.horizontal, 40)
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .padding(.horizontal, 30)
 
-                HStack(spacing: 16) {
-                    Button(action: { state.startRun() }) {
-                        Text("RETRY").font(.headline.bold())
-                            .padding(.horizontal, 30).padding(.vertical, 12)
-                            .background(gold).foregroundColor(.black).clipShape(Capsule())
-                    }
-                    Button(action: { state.phase = .menu }) {
-                        Text("MENU").font(.headline.bold())
-                            .padding(.horizontal, 30).padding(.vertical, 12)
-                            .background(devinBlue).foregroundColor(.white).clipShape(Capsule())
-                    }
+                Button(action: { state.startRun() }) {
+                    Text("PLAY AGAIN")
+                        .font(.title3.bold())
+                        .padding(.horizontal, 50)
+                        .padding(.vertical, 14)
+                        .background(gold)
+                        .foregroundColor(.black)
+                        .clipShape(Capsule())
+                }
+                Button(action: { state.phase = .menu }) {
+                    Text("MENU")
+                        .font(.headline.bold())
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 10)
+                        .background(devinBlue)
+                        .foregroundColor(.white)
+                        .clipShape(Capsule())
                 }
             }
         }

@@ -6,6 +6,13 @@ final class Player {
     let bodyNode = SCNNode()  // visual body (bobs, squashes)
     private var tailNode: SCNNode?
     private var runTime: TimeInterval = 0
+    private var armL: SCNNode?
+    private var armR: SCNNode?
+    private var legL: SCNNode?
+    private var legR: SCNNode?
+    private var shadowNode: SCNNode?
+    private(set) var jetpackNode: SCNNode?
+    private(set) var sneakersNode: SCNNode?
 
     // movement state
     var lane: Int = 1 // 0,1,2
@@ -54,6 +61,20 @@ final class Player {
         bodyN.rotation = SCNVector4(1, 0, 0, Float.pi / 10)
         bodyNode.addChildNode(bodyN)
 
+        // blue hoodie band around the torso
+        let hoodie = SCNBox(width: 0.7, height: 0.4, length: 0.62, chamferRadius: 0.12)
+        hoodie.materials = [blue]
+        let h = SCNNode(geometry: hoodie)
+        h.position = SCNVector3(0, 0.95, 0)
+        bodyNode.addChildNode(h)
+        // hood bump behind head
+        let hood = SCNSphere(radius: 0.16)
+        hood.materials = [blue]
+        let hn = SCNNode(geometry: hood)
+        hn.scale = SCNVector3(1, 0.7, 0.8)
+        hn.position = SCNVector3(0, 1.28, -0.15)
+        bodyNode.addChildNode(hn)
+
         // belly
         let belly = SCNSphere(radius: 0.24)
         belly.materials = [tan]
@@ -62,49 +83,49 @@ final class Player {
         bellyN.position = SCNVector3(0, 0.8, 0.22)
         bodyNode.addChildNode(bellyN)
 
-        // head
-        let head = SCNSphere(radius: 0.30)
+        // head (bigger, SS proportions)
+        let head = SCNSphere(radius: 0.36)
         head.materials = [brown]
         let headN = SCNNode(geometry: head)
-        headN.position = SCNVector3(0, 1.45, 0.05)
+        headN.position = SCNVector3(0, 1.52, 0.06)
         bodyNode.addChildNode(headN)
 
         // muzzle
-        let muzzle = SCNSphere(radius: 0.13)
+        let muzzle = SCNSphere(radius: 0.15)
         muzzle.materials = [tan]
         let muzzleN = SCNNode(geometry: muzzle)
         muzzleN.scale = SCNVector3(1.1, 0.8, 1)
-        muzzleN.position = SCNVector3(0, 1.38, 0.30)
+        muzzleN.position = SCNVector3(0, 1.44, 0.36)
         bodyNode.addChildNode(muzzleN)
 
         // nose
-        let nose = SCNSphere(radius: 0.055)
+        let nose = SCNSphere(radius: 0.06)
         nose.materials = [black]
         let noseN = SCNNode(geometry: nose)
-        noseN.position = SCNVector3(0, 1.42, 0.42)
+        noseN.position = SCNVector3(0, 1.49, 0.5)
         bodyNode.addChildNode(noseN)
 
         // eyes
         for side: Float in [-1, 1] {
-            let eye = SCNSphere(radius: 0.045)
+            let eye = SCNSphere(radius: 0.05)
             eye.materials = [black]
             let e = SCNNode(geometry: eye)
-            e.position = SCNVector3(0.12 * side, 1.52, 0.28)
+            e.position = SCNVector3(0.14 * side, 1.6, 0.34)
             bodyNode.addChildNode(e)
-            let glint = SCNSphere(radius: 0.015)
+            let glint = SCNSphere(radius: 0.017)
             glint.materials = [white]
             let g = SCNNode(geometry: glint)
-            g.position = SCNVector3(0.13 * side, 1.53, 0.32)
+            g.position = SCNVector3(0.15 * side, 1.61, 0.38)
             bodyNode.addChildNode(g)
         }
 
         // ears
         for side: Float in [-1, 1] {
-            let ear = SCNSphere(radius: 0.09)
+            let ear = SCNSphere(radius: 0.1)
             ear.materials = [brown]
             let e = SCNNode(geometry: ear)
             e.scale = SCNVector3(1, 1, 0.5)
-            e.position = SCNVector3(0.2 * side, 1.68, 0.02)
+            e.position = SCNVector3(0.24 * side, 1.78, 0.0)
             bodyNode.addChildNode(e)
         }
 
@@ -114,7 +135,7 @@ final class Player {
                 let w = SCNCylinder(radius: 0.006, height: 0.28)
                 w.materials = [white]
                 let wn = SCNNode(geometry: w)
-                wn.position = SCNVector3(0.22 * side, 1.36 + Float(i) * 0.05, 0.30)
+                wn.position = SCNVector3(0.26 * side, 1.42 + Float(i) * 0.05, 0.36)
                 wn.rotation = SCNVector4(0, 0, 1, Float.pi / 2 + Float(side) * 0.2)
                 bodyNode.addChildNode(wn)
             }
@@ -129,32 +150,110 @@ final class Player {
         bodyNode.addChildNode(tailN)
         tailNode = tailN
 
-        // paws (feet)
+        // legs (animated) + paw feet
         for side: Float in [-1, 1] {
+            let legPivot = SCNNode()
+            legPivot.position = SCNVector3(0.15 * side, 0.55, 0)
+            let leg = SCNCapsule(capRadius: 0.08, height: 0.3)
+            leg.materials = [brown]
+            let l = SCNNode(geometry: leg)
+            l.position = SCNVector3(0, -0.15, 0)
+            legPivot.addChildNode(l)
             let paw = SCNSphere(radius: 0.09)
             paw.materials = [tan]
             let p = SCNNode(geometry: paw)
             p.scale = SCNVector3(1, 0.6, 1.4)
-            p.position = SCNVector3(0.15 * side, 0.38, 0.15)
-            bodyNode.addChildNode(p)
+            p.position = SCNVector3(0, -0.32, 0.05)
+            legPivot.addChildNode(p)
+            bodyNode.addChildNode(legPivot)
+            if side < 0 { legL = legPivot } else { legR = legPivot }
         }
 
-        // Devin-blue hoodie band / scarf around neck
-        let scarf = SCNTorus(ringRadius: 0.24, pipeRadius: 0.07)
-        scarf.materials = [blue]
-        let scarfN = SCNNode(geometry: scarf)
-        scarfN.position = SCNVector3(0, 1.2, 0.03)
-        scarfN.rotation = SCNVector4(1, 0, 0, Float.pi / 2)
-        bodyNode.addChildNode(scarfN)
+        // arms (animated swing)
+        for side: Float in [-1, 1] {
+            let armPivot = SCNNode()
+            armPivot.position = SCNVector3(0.38 * side, 1.15, 0.05)
+            let arm = SCNCapsule(capRadius: 0.07, height: 0.35)
+            arm.materials = [blue]
+            let a = SCNNode(geometry: arm)
+            a.position = SCNVector3(0, -0.2, 0)
+            armPivot.addChildNode(a)
+            let paw = SCNSphere(radius: 0.07)
+            paw.materials = [tan]
+            let p = SCNNode(geometry: paw)
+            p.position = SCNVector3(0, -0.42, 0)
+            armPivot.addChildNode(p)
+            bodyNode.addChildNode(armPivot)
+            if side < 0 { armL = armPivot } else { armR = armPivot }
+        }
 
         // blue backpack
         let pack = SCNBox(width: 0.34, height: 0.42, length: 0.16, chamferRadius: 0.05)
         pack.materials = [blue]
         let packN = SCNNode(geometry: pack)
-        packN.position = SCNVector3(0, 1.05, -0.33)
+        packN.position = SCNVector3(0, 1.05, -0.35)
         bodyNode.addChildNode(packN)
 
         node.addChildNode(bodyNode)
+
+        // soft blob shadow under him
+        let shadow = SCNCylinder(radius: 0.45, height: 0.01)
+        let sm = SCNMaterial()
+        sm.diffuse.contents = UIColor.black.withAlphaComponent(0.35)
+        sm.lightingModel = .constant
+        shadow.materials = [sm]
+        let sh = SCNNode(geometry: shadow)
+        sh.position = SCNVector3(0, 0.02, 0)
+        node.addChildNode(sh)
+        shadowNode = sh
+    }
+
+    // MARK: - Power-up visuals
+
+    func setJetpackVisual(_ on: Bool) {
+        jetpackNode?.removeFromParentNode()
+        jetpackNode = nil
+        guard on else { return }
+        let jp = SCNNode()
+        let blue = Self.material(UIColor(red: 0.122, green: 0.435, blue: 0.910, alpha: 1), roughness: 0.3)
+        for side: Float in [-1, 1] {
+            let tank = SCNCylinder(radius: 0.09, height: 0.45)
+            tank.materials = [blue]
+            let t = SCNNode(geometry: tank)
+            t.position = SCNVector3(0.14 * side, 0, 0)
+            jp.addChildNode(t)
+        }
+        // flickering flame cone
+        let flame = SCNCone(topRadius: 0.12, bottomRadius: 0.02, height: 0.5)
+        let fm = SCNMaterial()
+        fm.diffuse.contents = UIColor.orange
+        fm.emission.contents = UIColor.orange
+        flame.materials = [fm]
+        let f = SCNNode(geometry: flame)
+        f.rotation = SCNVector4(1, 0, 0, Float.pi)
+        f.position = SCNVector3(0, -0.45, 0)
+        f.name = "flame"
+        jp.addChildNode(f)
+        jp.position = SCNVector3(0, 1.05, -0.5)
+        bodyNode.addChildNode(jp)
+        jetpackNode = jp
+    }
+
+    func setSneakersVisual(_ on: Bool) {
+        sneakersNode?.removeFromParentNode()
+        sneakersNode = nil
+        guard on else { return }
+        let sn = SCNNode()
+        let orange = Self.material(.systemOrange, roughness: 0.5)
+        for side: Float in [-1, 1] {
+            let shoe = SCNBox(width: 0.14, height: 0.1, length: 0.28, chamferRadius: 0.04)
+            shoe.materials = [orange]
+            let s = SCNNode(geometry: shoe)
+            s.position = SCNVector3(0.15 * side, 0.1, 0.06)
+            sn.addChildNode(s)
+        }
+        node.addChildNode(sn)
+        sneakersNode = sn
     }
 
     // MARK: - Actions
@@ -170,6 +269,7 @@ final class Player {
         guard !isDead, !isJumping, !isFlying else { return false }
         isJumping = true
         isRolling = false
+        bodyNode.scale = SCNVector3(1, 1, 1)
         jumpT = 0
         jumpPeak = superSneakers ? 2.2 * 1.8 : 2.2
         return true
@@ -178,7 +278,6 @@ final class Player {
 
     func roll() -> Bool {
         guard !isDead, !isFlying else { return false }
-        // rolling cancels a jump early
         if isJumping { isJumping = false; visualY = 0 }
         isRolling = true
         rollT = 0
@@ -202,13 +301,20 @@ final class Player {
         node.runAction(.group([fall, drop]))
     }
 
-    // Hitbox: returns (minY, maxY, halfWidth)
     func hitbox() -> (minY: Float, maxY: Float, halfW: Float, halfD: Float) {
         let base = node.position.y
         if isRolling {
             return (base, base + 0.7, 0.4, 0.5)
         }
-        return (base + 0.25, base + 1.75, 0.4, 0.5)
+        return (base + 0.25, base + 1.8, 0.4, 0.5)
+    }
+
+    func idleUpdate(dt: TimeInterval) {
+        runTime += dt
+        bodyNode.position.y = abs(sin(Float(runTime) * 3)) * 0.08
+        if let tail = tailNode {
+            tail.rotation = SCNVector4(1, 0, 0, -0.4 + Float(sin(runTime * 4) * 0.15))
+        }
     }
 
     func update(dt: TimeInterval, speed: Double, flying: Bool, groundY: Float) {
@@ -242,7 +348,6 @@ final class Player {
             visualY = 0
         }
 
-        // running on top of a train
         var y = visualY + groundY
         if onTrainTop { y = trainTopY }
 
@@ -266,17 +371,32 @@ final class Player {
             bodyNode.scale = SCNVector3(1, 1, 1)
         }
 
-        // run bob + tail wag
-        let bob = flying ? 0 : abs(sin(Float(runTime) * 14)) * 0.12
+        // run bob + limb swing + tail wag
+        let runPhase = Float(runTime) * 14
+        let bob = flying ? 0 : abs(sin(runPhase)) * 0.12
         bodyNode.position.y = bob
+        armL?.rotation = SCNVector4(1, 0, 0, sin(runPhase) * 0.9)
+        armR?.rotation = SCNVector4(1, 0, 0, -sin(runPhase) * 0.9)
+        legL?.rotation = SCNVector4(1, 0, 0, -sin(runPhase) * 0.8)
+        legR?.rotation = SCNVector4(1, 0, 0, sin(runPhase) * 0.8)
         if let tail = tailNode {
             tail.rotation = SCNVector4(1, 0, 0, -0.4 + Float(sin(runTime * 10) * 0.25))
         }
         if flying {
             bodyNode.rotation = SCNVector4(1, 0, 0, -0.5)
+            // flame flicker
+            if let flame = jetpackNode?.childNode(withName: "flame", recursively: true) {
+                let s = Float.random(in: 0.8...1.3)
+                flame.scale = SCNVector3(1, s, 1)
+            }
         } else {
             bodyNode.rotation = SCNVector4(0, 0, 0, 0)
         }
+
+        // shadow stays on the ground
+        shadowNode?.position.y = -y + 0.02
+        let shrink = max(0.3, 1 - y / 8)
+        shadowNode?.scale = SCNVector3(shrink, 1, shrink)
 
         node.position.y = y
     }

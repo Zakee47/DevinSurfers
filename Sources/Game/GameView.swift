@@ -9,7 +9,7 @@ struct GameView: View {
         ZStack {
             SceneViewRepresentable(state: state)
                 .ignoresSafeArea()
-            HUDView()
+            HUDView(onHoverboardTap: { state.hoverboardRequest = true })
         }
     }
 }

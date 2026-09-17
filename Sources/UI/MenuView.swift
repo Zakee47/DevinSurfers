@@ -2,82 +2,155 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject var state: GameState
-    @FocusState private var playFocused: Bool
-
     private let devinBlue = Color(red: 0.118, green: 0.388, blue: 1.0)
     private let gold = Color(red: 0.961, green: 0.773, blue: 0.094)
+    @State private var pulse = false
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color(red: 0.03, green: 0.04, blue: 0.12), devinBlue.opacity(0.35)],
-                           startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-            VStack(spacing: 20) {
+            // tap anywhere to play (scene visible behind)
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture { state.startRun() }
+
+            VStack {
+                // top bar: tokens / hoverboards / high score
+                HStack(spacing: 16) {
+                    Label("\(state.totalTokens)", systemImage: "circle.fill")
+                        .foregroundColor(gold)
+                    Label("\(state.hoverboardCharges)", systemImage: "skateboard.fill")
+                        .foregroundColor(.teal)
+                    Spacer()
+                    Label("\(state.highScore)", systemImage: "trophy.fill")
+                        .foregroundColor(gold)
+                }
+                .font(.headline.bold())
+                .padding(10)
+                .background(Color.black.opacity(0.35))
+                .clipShape(Capsule())
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+
                 Spacer()
+
                 Text("RUNNING FROM\nAI SLOP")
-                    .font(.system(size: 44, weight: .black, design: .rounded))
+                    .font(.system(size: 42, weight: .black, design: .rounded))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(LinearGradient(colors: [devinBlue, gold], startPoint: .leading, endPoint: .trailing))
-                    .shadow(color: devinBlue.opacity(0.6), radius: 12)
+                    .shadow(color: .black.opacity(0.6), radius: 8)
+
                 Text("Devin the otter — endless runner")
                     .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.8))
+                    .foregroundColor(.white)
+                    .shadow(radius: 4)
+
+                Spacer()
 
                 Button(action: { state.startRun() }) {
-                    Text("▶  PLAY")
+                    Text("TAP TO PLAY")
                         .font(.title2.bold())
-                        .padding(.horizontal, 60)
-                        .padding(.vertical, 14)
-                        .background(gold)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 12)
+                        .background(gold.opacity(pulse ? 0.9 : 0.6))
                         .foregroundColor(.black)
                         .clipShape(Capsule())
+                        .scaleEffect(pulse ? 1.08 : 0.96)
                 }
-                .focused($playFocused)
-                .onAppear { playFocused = true }
-                // Return key triggers Play on simulator
                 .keyboardShortcut(.return, modifiers: [])
-
-                HStack(spacing: 30) {
-                    VStack {
-                        Text("HIGH SCORE").font(.caption).foregroundColor(.white.opacity(0.6))
-                        Text("\(state.highScore)").font(.title3.bold()).foregroundColor(gold)
-                    }
-                    VStack {
-                        Text("ACU TOKENS").font(.caption).foregroundColor(.white.opacity(0.6))
-                        Text("\(state.totalTokens)").font(.title3.bold()).foregroundColor(gold)
-                    }
-                    VStack {
-                        Text("HOVERBOARDS").font(.caption).foregroundColor(.white.opacity(0.6))
-                        Text("\(state.hoverboardCharges)").font(.title3.bold()).foregroundColor(devinBlue)
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                        pulse = true
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("MISSIONS — Running from AI Slop")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                // bottom row of buttons
+                HStack(spacing: 14) {
+                    MenuPillButton(title: "MISSIONS", color: devinBlue) { state.showMissions = true }
+                    MenuPillButton(title: "TOP RUN", color: devinBlue) { state.showTopRun = true }
+                    MenuPillButton(title: "HOW TO PLAY", color: devinBlue) { state.showHowToPlay = true }
+                }
+                .padding(.bottom, 30)
+            }
+        }
+        .sheet(isPresented: $state.showMissions) { missionsSheet }
+        .sheet(isPresented: $state.showTopRun) { topRunSheet }
+        .sheet(isPresented: $state.showHowToPlay) { howToPlaySheet }
+    }
+
+    private var missionsSheet: some View {
+        NavigationStack {
+            List {
+                Section("Running from AI Slop") {
                     ForEach(state.missions) { m in
                         HStack {
-                            Text(m.title).font(.subheadline).foregroundColor(.white.opacity(0.9))
+                            Text(m.title)
                             Spacer()
-                            Text("\(m.progress)/\(m.goal)").font(.subheadline.monospacedDigit()).foregroundColor(gold)
+                            Text("\(m.progress)/\(m.goal)").monospacedDigit().foregroundColor(.secondary)
                         }
                     }
                 }
-                .padding()
-                .background(Color.white.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .padding(.horizontal)
-
-                VStack(spacing: 4) {
-                    Text("HOW TO PLAY").font(.caption.bold()).foregroundColor(.white.opacity(0.6))
-                    Text("Swipe ← → to switch lanes · Swipe ↑ to jump · Swipe ↓ to roll\nDouble-tap for hoverboard · Keys: arrows, space, P")
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.white.opacity(0.6))
+                Section {
+                    Text("Complete a mission for +100 ACU Tokens.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                 }
+            }
+            .navigationTitle("Missions")
+            .toolbar { Button("Done") { state.showMissions = false } }
+        }
+        .presentationDetents([.medium])
+    }
+
+    private var topRunSheet: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Image(systemName: "trophy.fill")
+                    .font(.system(size: 60))
+                    .foregroundColor(gold)
+                Text("\(state.highScore)")
+                    .font(.system(size: 60, weight: .black, design: .rounded))
+                Text("HIGH SCORE").foregroundColor(.secondary)
+                Label("\(state.totalTokens) ACU Tokens collected", systemImage: "circle.fill")
+                    .foregroundColor(gold)
                 Spacer()
             }
+            .padding(.top, 40)
+            .navigationTitle("Top Run")
+            .toolbar { Button("Done") { state.showTopRun = false } }
+        }
+        .presentationDetents([.medium])
+    }
+
+    private var howToPlaySheet: some View {
+        NavigationStack {
+            List {
+                Label("Swipe left/right — change lane", systemImage: "arrow.left.arrow.right")
+                Label("Swipe up — jump", systemImage: "arrow.up")
+                Label("Swipe down — roll", systemImage: "arrow.down")
+                Label("Double-tap — hoverboard", systemImage: "skateboard.fill")
+                Label("Keyboard: arrows, space = board, P = pause", systemImage: "keyboard")
+            }
+            .navigationTitle("How to Play")
+            .toolbar { Button("Done") { state.showHowToPlay = false } }
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+struct MenuPillButton: View {
+    let title: String
+    let color: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.caption.bold())
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(color.opacity(0.9))
+                .foregroundColor(.white)
+                .clipShape(Capsule())
         }
     }
 }

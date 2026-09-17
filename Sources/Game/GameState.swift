@@ -45,6 +45,12 @@ final class GameState: ObservableObject {
     @Published var stumbleFlash: Bool = false
     @Published var newHighScore: Bool = false
     @Published var deathCause: String = "CAUGHT BY AI SLOP"
+    @Published var dyingText: String? = nil   // "CAUGHT!" / "CRASHED!" banner while dying
+    @Published var missionToast: String? = nil // bottom-left mission progress toast
+    @Published var showMissions = false
+    @Published var showTopRun = false
+    @Published var showHowToPlay = false
+    @Published var hoverboardRequest = false // HUD button -> GameScene
 
     private let defaults = UserDefaults.standard
     private let highScoreKey = "devinsurfers.highScore"
@@ -71,6 +77,7 @@ final class GameState: ObservableObject {
 
     func startRun() {
         score = 0
+        scoreAccumulator = 0
         tokens = 0
         distance = 0
         multiplier = 1
@@ -105,12 +112,16 @@ final class GameState: ObservableObject {
         MissionStore.save(missions, defaults: defaults, key: missionsKey)
     }
 
+    private var scoreAccumulator: Double = 0
+
     // Called by GameScene each frame / on events
     func tick(dt: TimeInterval, speed: Double) {
         distance += speed * dt
         let mult = activePowerUps[.multiplier2x] != nil ? 2 : 1
         multiplier = mult
-        score += Int((speed * dt) * Double(mult))
+        scoreAccumulator += (speed * dt) * Double(mult)
+        score += Int(scoreAccumulator)
+        scoreAccumulator = scoreAccumulator.truncatingRemainder(dividingBy: 1)
         var expired: [PowerUpKind] = []
         for (k, v) in activePowerUps {
             let nv = v - dt
@@ -144,7 +155,14 @@ final class GameState: ObservableObject {
             } else {
                 missions[i].progress = min(missions[i].goal, missions[i].progress + amount)
             }
-            if missions[i].progress != before { changed = true }
+            if missions[i].progress != before {
+                changed = true
+                missionToast = "Mission: \(missions[i].title)  \(missions[i].progress)/\(missions[i].goal)"
+                let captured = missionToast
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+                    if self?.missionToast == captured { self?.missionToast = nil }
+                }
+            }
             if missions[i].progress >= missions[i].goal {
                 missions[i].completed = true
                 totalTokens += 100 // mission bonus

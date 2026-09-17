@@ -5,19 +5,30 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
+            // live 3D scene is always behind everything
+            GameView()
+
             switch gameState.phase {
             case .menu:
                 MenuView()
-            case .playing, .paused, .gameOver:
-                GameView()
-            }
-            if gameState.phase == .gameOver {
+            case .playing:
+                EmptyView()
+            case .paused:
+                PauseView()
+            case .gameOver:
                 GameOverView()
             }
-            if gameState.phase == .paused {
-                PauseView()
+
+            // dying banner ("CAUGHT!" / "CRASHED!")
+            if let banner = gameState.dyingText {
+                Text(banner)
+                    .font(.system(size: 52, weight: .black, design: .rounded))
+                    .foregroundColor(.red)
+                    .shadow(color: .black, radius: 8)
+                    .transition(.scale)
             }
         }
+        .animation(.default, value: gameState.dyingText)
         .environmentObject(gameState)
         .statusBarHidden(true)
     }
