@@ -226,14 +226,19 @@ final class Player {
         inset.geometry?.materials = [silver]
         inset.position.z = 0.036
         lid.addChildNode(inset)
-        for row in 0..<3 {
-            for column in 0..<2 {
-                let mark = SCNNode(geometry: SCNCapsule(capRadius: 0.026, height: 0.115))
-                mark.geometry?.materials = [dark]
-                mark.position = SCNVector3(Float(column) * 0.12 - 0.06, Float(row) * 0.085 - 0.09, 0.052)
-                mark.eulerAngles.z = -.pi / 3
-                lid.addChildNode(mark)
-            }
+        if let logoImage = UIImage(named: "CognitionLogo") {
+            let logo = SCNPlane(width: 0.44, height: 0.44)
+            let ink = SCNMaterial()
+            ink.diffuse.contents = logoImage
+            ink.diffuse.mipFilter = .linear
+            ink.lightingModel = .constant
+            ink.transparencyMode = .aOne
+            ink.writesToDepthBuffer = false
+            logo.materials = [ink]
+            let mark = SCNNode(geometry: logo)
+            mark.position.z = 0.048
+            mark.castsShadow = false
+            lid.addChildNode(mark)
         }
         if open {
             let keyboard = SCNNode(geometry: SCNBox(width: 0.84, height: 0.06, length: 0.43, chamferRadius: 0.025))
