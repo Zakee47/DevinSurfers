@@ -2,114 +2,140 @@ import SwiftUI
 
 struct HUDView: View {
     @EnvironmentObject var state: GameState
-    private let gold = Color(red: 0.961, green: 0.773, blue: 0.094)
-    var onHoverboardTap: (() -> Void)?
+    var onHoverboardTap: () -> Void
+
+    private var boardAvailable: Bool {
+        !state.hoverboardActive && state.hoverboardCharges > 0 && state.dyingText == nil
+    }
 
     var body: some View {
-        if state.phase == .playing || state.phase == .paused {
-            VStack {
-                HStack(alignment: .top) {
-                    // top-left round pause button
+        if state.phase == .playing {
+            VStack(spacing: 12) {
+                HStack(alignment: .top, spacing: 10) {
                     Button(action: { state.phase = .paused }) {
                         Image(systemName: "pause.fill")
-                            .font(.title3)
-                            .padding(12)
-                            .background(Color.black.opacity(0.4))
-                            .clipShape(Circle())
-                            .foregroundColor(.white)
+                            .font(.system(size: 18, weight: .black))
+                            .frame(width: 48, height: 48)
+                            .background(ArcadeTheme.ink.opacity(0.9), in: RoundedRectangle(cornerRadius: 16))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 16).strokeBorder(.white.opacity(0.25), lineWidth: 1)
+                            }
                     }
-                    .padding(.leading, 14)
-                    .padding(.top, 10)
-
-                    // top-center power-up bars
-                    VStack(spacing: 4) {
+                    .disabled(state.dyingText != nil)
+                    .accessibilityLabel("Pause run")
+                    Spacer(minLength: 0)
+                    VStack(alignment: .trailing, spacing: 4) {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text("×\(state.multiplier)")
+                                .font(.system(.caption, design: .rounded, weight: .black))
+                                .foregroundStyle(ArcadeTheme.gold)
+                            Text(state.score.formatted())
+                                .font(.system(size: 32, weight: .black, design: .rounded))
+                                .monospacedDigit()
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.6)
+                        }
+                        HStack(spacing: 6) {
+                            Text("SCORE")
+                            Text("·")
+                            Text("\(Int(state.distance)) m")
+                        }
+                        .font(.system(size: 9, weight: .heavy, design: .rounded))
+                        .tracking(1)
+                        .foregroundStyle(ArcadeTheme.muted)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(ArcadeTheme.ink.opacity(0.9), in: RoundedRectangle(cornerRadius: 18))
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(
+                        "Score \(state.score), multiplier \(state.multiplier), distance \(Int(state.distance)) meters")
+                }
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 6) {
                         ForEach(PowerUpKind.allCases, id: \.self) { kind in
-                            if let remaining = state.activePowerUps[kind], kind != .hoverboardPickup {
+                            if let remaining = state.activePowerUps[kind],
+                                kind != .hoverboardPickup || state.hoverboardActive
+                            {
                                 PowerUpBar(kind: kind, remaining: remaining)
                             }
                         }
-                        if state.hoverboardActive {
-                            PowerUpBar(kind: .hoverboardPickup,
-                                       remaining: state.activePowerUps[.hoverboardPickup] ?? 0)
-                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 14)
-
-                    // top-right score + tokens
-                    VStack(alignment: .trailing, spacing: 4) {
-                        HStack(spacing: 6) {
-                            if state.multiplier > 1 {
-                                Text("x\(state.multiplier)")
-                                    .font(.caption.bold())
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.purple)
-                                    .clipShape(Capsule())
-                            }
-                            Text("\(state.score)")
-                                .font(.system(size: 30, weight: .black, design: .rounded))
-                                .foregroundColor(.white)
-                        }
-                        HStack(spacing: 5) {
-                            Circle().fill(gold).frame(width: 14, height: 14)
-                                .overlay(Text("A").font(.system(size: 9).bold()).foregroundColor(.black))
-                            Text("\(state.tokens)")
-                                .font(.headline.bold().monospacedDigit())
-                                .foregroundColor(gold)
-                        }
-                        Text("\(Int(state.distance))m")
-                            .font(.caption.monospacedDigit())
-                            .foregroundColor(.white.opacity(0.7))
+                    Spacer(minLength: 12)
+                    HStack(spacing: 8) {
+                        ACUTokenIcon(size: 24)
+                        Text(state.tokens.formatted())
+                            .font(.system(.headline, design: .rounded, weight: .black))
+                            .monospacedDigit()
                     }
-                    .shadow(radius: 4)
-                    .padding(.trailing, 14)
-                    .padding(.top, 10)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(ArcadeTheme.ink.opacity(0.9), in: Capsule())
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(state.tokens) ACU Tokens")
                 }
+                .allowsHitTesting(false)
 
                 if state.stumbleFlash {
-                    Text("STUMBLE! AI Slop is behind you!")
-                        .font(.headline.bold())
-                        .foregroundColor(.white)
-                        .padding(8)
-                        .background(Color.red.opacity(0.85))
-                        .clipShape(Capsule())
+                    Label("AI SLOP IS CLOSING IN", systemImage: "exclamationmark.triangle.fill")
+                        .font(.system(.caption, design: .rounded, weight: .black))
+                        .padding(12)
+                        .background(Color(red: 0.65, green: 0.13, blue: 0.11), in: Capsule())
+                        .allowsHitTesting(false)
                 }
 
                 Spacer()
 
-                HStack(alignment: .bottom) {
-                    // mission toast bottom-left
+                HStack(alignment: .bottom, spacing: 14) {
                     if let toast = state.missionToast {
-                        Text(toast)
-                            .font(.caption.bold())
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(Color.black.opacity(0.55))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .transition(.move(edge: .leading).combined(with: .opacity))
-                    }
-                    Spacer()
-                    // hoverboard button bottom-right
-                    Button(action: { state.hoverboardRequest = true }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "skateboard.fill")
-                                .foregroundColor(.teal)
-                            Text("×\(state.hoverboardCharges)")
-                                .font(.headline.bold())
-                                .foregroundColor(.white)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Label("MISSION PROGRESS", systemImage: "scope")
+                                .font(.system(size: 9, weight: .heavy, design: .rounded))
+                                .foregroundStyle(ArcadeTheme.mint)
+                            Text(toast)
+                                .font(.system(.caption2, design: .rounded, weight: .semibold))
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        .padding(10)
-                        .background(Color.black.opacity(0.45))
-                        .clipShape(Capsule())
+                        .padding(12)
+                        .background(ArcadeTheme.ink.opacity(0.92), in: RoundedRectangle(cornerRadius: 16))
+                        .allowsHitTesting(false)
                     }
-                    .padding(.trailing, 14)
+                    Spacer(minLength: 0)
+                    Button(action: onHoverboardTap) {
+                        VStack(spacing: 5) {
+                            HStack(spacing: 6) {
+                                Image(systemName: state.hoverboardActive ? "shield.checkered" : "shield.fill")
+                                    .font(.system(size: 24, weight: .bold))
+                                Text("×\(state.hoverboardCharges)")
+                                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                            }
+                            Text(
+                                state.hoverboardActive
+                                    ? "PROTECTED" : state.hoverboardCharges > 0 ? "HOVERBOARD" : "NO BOARDS"
+                            )
+                            .font(.system(size: 8, weight: .heavy, design: .rounded))
+                            .tracking(1)
+                        }
+                        .foregroundStyle(
+                            boardAvailable || state.hoverboardActive ? ArcadeTheme.mint : ArcadeTheme.muted
+                        )
+                        .frame(minWidth: 88, minHeight: 66)
+                        .background(ArcadeTheme.ink.opacity(0.94), in: RoundedRectangle(cornerRadius: 20))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20).strokeBorder(
+                                ArcadeTheme.mint.opacity(boardAvailable ? 0.7 : 0.2), lineWidth: 1.5)
+                        }
+                    }
+                    .disabled(!boardAvailable)
+                    .accessibilityLabel(state.hoverboardActive ? "Hoverboard active" : "Activate hoverboard")
+                    .accessibilityValue("\(state.hoverboardCharges) remaining")
+                    .accessibilityHint("Protects against one crash")
                 }
-                .padding(.leading, 14)
-                .padding(.bottom, 14)
             }
-            .animation(.default, value: state.stumbleFlash)
-            .animation(.default, value: state.missionToast)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+            .padding(.bottom, 10)
         }
     }
 }
@@ -119,19 +145,21 @@ struct PowerUpBar: View {
     let remaining: TimeInterval
 
     var body: some View {
-        let total: TimeInterval = kind == .hoverboardPickup ? 30 : kind.duration
-        let frac = max(0, min(1, remaining / total))
-        HStack(spacing: 4) {
-            Text(kind.displayName).font(.caption2.bold())
-            ZStack(alignment: .leading) {
-                Capsule().fill(Color.white.opacity(0.25)).frame(width: 70, height: 6)
-                Capsule().fill(Color.green).frame(width: 70 * frac, height: 6)
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(kind.displayName.uppercased())
+                Spacer()
+                Text("\(Int(ceil(remaining)))s").monospacedDigit()
             }
+            .font(.system(size: 9, weight: .heavy, design: .rounded))
+            ProgressView(value: max(0, remaining), total: kind == .hoverboardPickup ? 30 : kind.duration)
+                .tint(ArcadeTheme.mint)
         }
-        .foregroundColor(.white)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 3)
-        .background(Color.black.opacity(0.4))
-        .clipShape(Capsule())
+        .foregroundStyle(.white)
+        .frame(width: 122)
+        .padding(10)
+        .background(ArcadeTheme.ink.opacity(0.9), in: RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(kind.displayName), \(Int(ceil(remaining))) seconds remaining")
     }
 }

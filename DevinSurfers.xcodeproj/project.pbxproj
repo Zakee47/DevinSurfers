@@ -18,6 +18,8 @@
 		ADC00B94021BEC17D79092B7 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D883EDB5FA255F255E10865B /* GameOverView.swift */; };
 		BE590127646439B88DF04910 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541716BC4925CE929787629 /* GameView.swift */; };
 		C49D3FBA0A71F6F42674FB7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D7E6665F2735680534A67E5 /* Assets.xcassets */; };
+		D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */; };
+		DA2E00EB3BC6A52F9459F692 /* ArcadeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */; };
 		E1B9FB9F2AAC8A51F484A851 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BA5073A07378DAC0E5E084 /* MenuView.swift */; };
 		E34368F6DFB039E145D7BDCD /* Chaser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D734B573F7E555145A7974C /* Chaser.swift */; };
 		E499F5B0785A538725586CDB /* DevinSurfersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206977385801880C9800394B /* DevinSurfersApp.swift */; };
@@ -25,6 +27,16 @@
 		FBDFB9B6A4D59ABC4734C54A /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DA9817FEFE55FE4413A3A /* Audio.swift */; };
 		FE7EF8150E6D757CCCB59532 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CB7BC723295A6D95B2147B /* Player.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F8BFE1D24E57DABA816F8F1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE9FA20B9A9115E1FF25F998 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D153B58A21160E1FCF40F49B;
+			remoteInfo = DevinSurfers;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1412DCBB6F06981AEBF22069 /* TrackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackManager.swift; sourceTree = "<group>"; };
@@ -34,7 +46,10 @@
 		489DA9817FEFE55FE4413A3A /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 		5D82D3F36BB04EB29B4AEA65 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		62EA5D1EBF003BD5A5901B43 /* Obstacle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Obstacle.swift; sourceTree = "<group>"; };
+		6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresentationTests.swift; sourceTree = "<group>"; };
 		6D7E6665F2735680534A67E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeTheme.swift; sourceTree = "<group>"; };
+		77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DevinSurfersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C992AE015735784F5B5841D /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		90CC366FF931C058B0B13338 /* Missions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Missions.swift; sourceTree = "<group>"; };
 		B3CB7BC723295A6D95B2147B /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -60,6 +75,7 @@
 		145E7BEA77E58DCF409C50CB /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */,
 				D883EDB5FA255F255E10865B /* GameOverView.swift */,
 				CBDC461C3042CC41B6CCD1CE /* HUDView.swift */,
 				D4BA5073A07378DAC0E5E084 /* MenuView.swift */,
@@ -71,8 +87,17 @@
 			isa = PBXGroup;
 			children = (
 				B6C06B55B4A0302236748961 /* DevinSurfers.app */,
+				77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8AF37F7D11B77CF9B440734C /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		9983DE5768C01A21EB6D05B7 /* Sources */ = {
@@ -108,6 +133,7 @@
 			children = (
 				CEBEB37C742A432B6F7DCF77 /* Resources */,
 				9983DE5768C01A21EB6D05B7 /* Sources */,
+				8AF37F7D11B77CF9B440734C /* Tests */,
 				7374B96EC8135E93AB35E848 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -123,6 +149,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2F4AC644B165C22663901D72 /* DevinSurfersTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E55CC9AC3C426E7BA2587141 /* Build configuration list for PBXNativeTarget "DevinSurfersTests" */;
+			buildPhases = (
+				4AFD8224FB1BC81C2249A942 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A766BB71FF69DF1651B5B12E /* PBXTargetDependency */,
+			);
+			name = DevinSurfersTests;
+			packageProductDependencies = (
+			);
+			productName = DevinSurfersTests;
+			productReference = 77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D153B58A21160E1FCF40F49B /* DevinSurfers */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 74D26FF16089B9029F163A18 /* Build configuration list for PBXNativeTarget "DevinSurfers" */;
@@ -171,6 +215,7 @@
 			projectRoot = "";
 			targets = (
 				D153B58A21160E1FCF40F49B /* DevinSurfers */,
+				2F4AC644B165C22663901D72 /* DevinSurfersTests */,
 			);
 		};
 /* End PBXProject section */
@@ -187,10 +232,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4AFD8224FB1BC81C2249A942 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		546B0BEB98DD6BBE860A5274 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA2E00EB3BC6A52F9459F692 /* ArcadeTheme.swift in Sources */,
 				FBDFB9B6A4D59ABC4734C54A /* Audio.swift in Sources */,
 				E34368F6DFB039E145D7BDCD /* Chaser.swift in Sources */,
 				F3D08D1123F5B8CCF0FD8C06 /* Collectible.swift in Sources */,
@@ -212,7 +266,33 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A766BB71FF69DF1651B5B12E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D153B58A21160E1FCF40F49B /* DevinSurfers */;
+			targetProxy = F8BFE1D24E57DABA816F8F1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		339AFCC337B328FF7FE89260 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.DevinSurfersTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevinSurfers.app/DevinSurfers";
+			};
+			name = Release;
+		};
 		3BA491D6A3C3093C9C014853 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -353,6 +433,24 @@
 			};
 			name = Debug;
 		};
+		85CDFFCA53979E6D219138CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.DevinSurfersTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevinSurfers.app/DevinSurfers";
+			};
+			name = Debug;
+		};
 		9B3D93C24C213CE9F03E305E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -391,6 +489,15 @@
 			buildConfigurations = (
 				9B3D93C24C213CE9F03E305E /* Debug */,
 				3BA491D6A3C3093C9C014853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E55CC9AC3C426E7BA2587141 /* Build configuration list for PBXNativeTarget "DevinSurfersTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CDFFCA53979E6D219138CE /* Debug */,
+				339AFCC337B328FF7FE89260 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

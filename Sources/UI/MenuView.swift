@@ -2,172 +2,273 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject var state: GameState
-    private let devinBlue = Color(red: 0.118, green: 0.388, blue: 1.0)
-    private let gold = Color(red: 0.961, green: 0.773, blue: 0.094)
-    @State private var pulse = false
 
     var body: some View {
         ZStack {
-            // tap anywhere to play (scene visible behind)
-            Color.clear
-                .contentShape(Rectangle())
-                .onTapGesture { state.startRun() }
+            LinearGradient(
+                stops: [
+                    .init(color: ArcadeTheme.ink.opacity(0.2), location: 0),
+                    .init(color: .clear, location: 0.4),
+                    .init(color: .clear, location: 0.63),
+                    .init(color: ArcadeTheme.ink, location: 0.82),
+                ],
+                startPoint: .top, endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
 
-            VStack {
-                // top bar: tokens / hoverboards / high score
-                HStack(spacing: 16) {
-                    Label("\(state.totalTokens)", systemImage: "circle.fill")
-                        .foregroundColor(gold)
-                    Label("\(state.hoverboardCharges)", systemImage: "skateboard.fill")
-                        .foregroundColor(.teal)
-                    Spacer()
-                    Label("\(state.highScore)", systemImage: "trophy.fill")
-                        .foregroundColor(gold)
-                }
-                .font(.headline.bold())
-                .padding(10)
-                .background(Color.black.opacity(0.35))
-                .clipShape(Capsule())
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
+            VStack(spacing: 0) {
+                topBar
+                title
+                    .padding(.top, 22)
 
-                Spacer()
+                Spacer(minLength: 24)
 
-                VStack(spacing: 6) {
-                    ZStack {
-                        // navy stroke layers
-                        ForEach([-2, 2], id: \.self) { dx in
-                            ForEach([-2, 2], id: \.self) { dy in
-                                Text("RUNNING FROM\nAI SLOP")
-                                    .font(.system(size: 42, weight: .black, design: .rounded))
-                                    .multilineTextAlignment(.center)
-                                    .foregroundColor(Color(red: 0.02, green: 0.05, blue: 0.15).opacity(0.9))
-                                    .offset(x: CGFloat(dx), y: CGFloat(dy))
-                            }
+                VStack(spacing: 14) {
+                    HStack(spacing: 6) {
+                        Circle().fill(ArcadeTheme.mint).frame(width: 6, height: 6)
+                        Text("DEVIN THE OTTER")
+                            .tracking(2)
+                        Text("/ READY TO RUN")
+                            .foregroundStyle(ArcadeTheme.muted)
+                    }
+                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .foregroundStyle(ArcadeTheme.mint)
+
+                    Button(action: state.startRun) {
+                        HStack {
+                            Image(systemName: "play.fill")
+                            Spacer()
+                            Text("LET’S RUN")
+                                .tracking(2)
+                            Spacer()
+                            Image(systemName: "arrow.right")
                         }
-                        Text("RUNNING FROM\nAI SLOP")
-                            .font(.system(size: 42, weight: .black, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(LinearGradient(colors: [devinBlue, gold], startPoint: .leading, endPoint: .trailing))
-                            .shadow(color: .black.opacity(0.7), radius: 2, x: 2, y: 3)
+                        .padding(.horizontal, 22)
                     }
-                    Text("Devin the otter — endless runner")
-                        .font(.subheadline.bold())
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.8), radius: 2, x: 1, y: 2)
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 14)
-                .background(Color(red: 0.02, green: 0.05, blue: 0.15).opacity(0.45))
-                .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .buttonStyle(ArcadeButtonStyle())
+                    .keyboardShortcut(.return, modifiers: [])
+                    .accessibilityLabel("Play Running from AI Slop")
 
-                Spacer()
-
-                Button(action: { state.startRun() }) {
-                    Text("TAP TO PLAY")
-                        .font(.title2.bold())
-                        .padding(.horizontal, 40)
-                        .padding(.vertical, 12)
-                        .background(gold.opacity(pulse ? 0.9 : 0.6))
-                        .foregroundColor(.black)
-                        .clipShape(Capsule())
-                        .scaleEffect(pulse ? 1.08 : 0.96)
-                }
-                .keyboardShortcut(.return, modifiers: [])
-                .onAppear {
-                    withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
-                        pulse = true
+                    HStack(spacing: 10) {
+                        MenuTile(
+                            title: "MISSIONS", detail: "\(state.missions.count) active", icon: "scope",
+                            color: ArcadeTheme.mint
+                        ) {
+                            state.showMissions = true
+                        }
+                        MenuTile(
+                            title: "BEST RUN", detail: state.highScore.formatted(), icon: "trophy.fill",
+                            color: ArcadeTheme.gold
+                        ) {
+                            state.showTopRun = true
+                        }
+                        MenuTile(title: "HOW TO", detail: "Learn the moves", icon: "hand.draw.fill", color: .white) {
+                            state.showHowToPlay = true
+                        }
                     }
                 }
-
-                // bottom row of buttons
-                HStack(spacing: 14) {
-                    MenuPillButton(title: "MISSIONS", color: devinBlue) { state.showMissions = true }
-                    MenuPillButton(title: "TOP RUN", color: devinBlue) { state.showTopRun = true }
-                    MenuPillButton(title: "HOW TO PLAY", color: devinBlue) { state.showHowToPlay = true }
-                }
-                .padding(.bottom, 30)
+                .padding(.bottom, 12)
             }
+            .padding(.horizontal, 22)
+            .padding(.top, 10)
         }
         .sheet(isPresented: $state.showMissions) { missionsSheet }
         .sheet(isPresented: $state.showTopRun) { topRunSheet }
         .sheet(isPresented: $state.showHowToPlay) { howToPlaySheet }
     }
 
-    private var missionsSheet: some View {
-        NavigationStack {
-            List {
-                Section("Running from AI Slop") {
-                    ForEach(state.missions) { m in
-                        HStack {
-                            Text(m.title)
-                            Spacer()
-                            Text("\(m.progress)/\(m.goal)").monospacedDigit().foregroundColor(.secondary)
-                        }
-                    }
-                }
-                Section {
-                    Text("Complete a mission for +100 ACU Tokens.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+    private var topBar: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 1) {
+                Text("devin")
+                    .font(.system(size: 26, weight: .black, design: .rounded))
+                    .tracking(-1)
+                Text("ARCADE")
+                    .font(.system(size: 8, weight: .heavy, design: .rounded))
+                    .tracking(4)
+                    .foregroundStyle(ArcadeTheme.mint)
+            }
+            Spacer()
+            HStack(spacing: 9) {
+                ACUTokenIcon()
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(state.totalTokens.formatted())
+                        .font(.system(.subheadline, design: .rounded, weight: .black))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Text("ACU TOKENS")
+                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                        .foregroundStyle(ArcadeTheme.muted)
                 }
             }
-            .navigationTitle("Missions")
-            .toolbar { Button("Done") { state.showMissions = false } }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .modifier(ArcadePanel())
+            .accessibilityElement(children: .combine)
         }
-        .presentationDetents([.medium])
+        .foregroundStyle(.white)
+    }
+
+    private var title: some View {
+        VStack(spacing: 0) {
+            Text("RUNNING FROM")
+                .font(.system(size: 23, weight: .black, design: .rounded))
+                .tracking(3)
+                .foregroundStyle(.white)
+            Text("AI SLOP")
+                .font(.system(size: 68, weight: .black, design: .rounded))
+                .tracking(-3)
+                .foregroundStyle(
+                    LinearGradient(colors: [ArcadeTheme.gold, ArcadeTheme.orange], startPoint: .top, endPoint: .bottom)
+                )
+                .shadow(color: Color(red: 0.55, green: 0.23, blue: 0.04), radius: 0, x: 0, y: 4)
+            Text("Outrun the noise. Collect the ACU.")
+                .font(.system(.caption, design: .rounded, weight: .medium))
+                .foregroundStyle(ArcadeTheme.muted)
+                .padding(.top, 7)
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var missionsSheet: some View {
+        ArcadeSheet(title: "Your missions", subtitle: "RUNNING FROM AI SLOP") {
+            state.showMissions = false
+        } content: {
+            HStack {
+                ACUTokenIcon()
+                Text("+100 ACU for every mission completed")
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+            }
+            .foregroundStyle(ArcadeTheme.gold)
+            ForEach(state.missions) { mission in
+                MissionProgressRow(mission: mission)
+                    .padding(18)
+                    .modifier(ArcadePanel())
+            }
+        }
     }
 
     private var topRunSheet: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                Image(systemName: "trophy.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(gold)
-                Text("\(state.highScore)")
-                    .font(.system(size: 60, weight: .black, design: .rounded))
-                Text("HIGH SCORE").foregroundColor(.secondary)
-                Label("\(state.totalTokens) ACU Tokens collected", systemImage: "circle.fill")
-                    .foregroundColor(gold)
-                Spacer()
+        ArcadeSheet(title: "Personal best", subtitle: "THE RUN TO BEAT") {
+            state.showTopRun = false
+        } content: {
+            Image(systemName: "trophy.fill")
+                .font(.system(size: 64))
+                .foregroundStyle(ArcadeTheme.gold)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 12)
+            Text(state.highScore.formatted())
+                .font(.system(size: 64, weight: .black, design: .rounded))
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(maxWidth: .infinity)
+            HStack(spacing: 12) {
+                RunStat(title: "ACU BANKED", value: state.totalTokens.formatted(), icon: "circle.fill")
+                RunStat(
+                    title: "BOARDS", value: state.hoverboardCharges.formatted(), icon: "shield.fill",
+                    color: ArcadeTheme.mint)
             }
-            .padding(.top, 40)
-            .navigationTitle("Top Run")
-            .toolbar { Button("Done") { state.showTopRun = false } }
         }
-        .presentationDetents([.medium])
     }
 
     private var howToPlaySheet: some View {
-        NavigationStack {
-            List {
-                Label("Swipe left/right — change lane", systemImage: "arrow.left.arrow.right")
-                Label("Swipe up — jump", systemImage: "arrow.up")
-                Label("Swipe down — roll", systemImage: "arrow.down")
-                Label("Double-tap — hoverboard", systemImage: "skateboard.fill")
-                Label("Keyboard: arrows, space = board, P = pause", systemImage: "keyboard")
-            }
-            .navigationTitle("How to Play")
-            .toolbar { Button("Done") { state.showHowToPlay = false } }
+        ArcadeSheet(title: "Make your escape", subtitle: "FOUR MOVES. NO SLOP.") {
+            state.showHowToPlay = false
+        } content: {
+            controlRow(
+                icon: "arrow.left.arrow.right", title: "Switch lanes", detail: "Swipe left or right to dodge trains.")
+            controlRow(icon: "arrow.up", title: "Jump", detail: "Swipe up to clear low barriers.")
+            controlRow(icon: "arrow.down", title: "Roll", detail: "Swipe down to duck under signs.")
+            controlRow(
+                icon: "hand.tap.fill", title: "Ride a hoverboard",
+                detail: "Double-tap or tap the shield. Blocks one crash.")
+            Label("Simulator: arrows to move · Space for board · P to pause", systemImage: "keyboard")
+                .font(.footnote)
+                .foregroundStyle(ArcadeTheme.muted)
+                .padding(.top, 8)
         }
-        .presentationDetents([.medium])
+    }
+
+    private func controlRow(icon: String, title: String, detail: String) -> some View {
+        HStack(spacing: 16) {
+            Image(systemName: icon)
+                .font(.title2.bold())
+                .foregroundStyle(ArcadeTheme.mint)
+                .frame(width: 36)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.system(.headline, design: .rounded, weight: .bold))
+                Text(detail).font(.subheadline).foregroundStyle(ArcadeTheme.muted)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(16)
+        .modifier(ArcadePanel())
     }
 }
 
-struct MenuPillButton: View {
+private struct MenuTile: View {
     let title: String
+    let detail: String
+    let icon: String
     let color: Color
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.caption.bold())
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(color.opacity(0.9))
-                .foregroundColor(.white)
-                .clipShape(Capsule())
+            VStack(spacing: 6) {
+                Image(systemName: icon).font(.system(size: 20, weight: .bold)).foregroundStyle(color)
+                Text(title).font(.system(size: 10, weight: .heavy, design: .rounded))
+                Text(detail).font(.system(size: 9, weight: .medium, design: .rounded)).foregroundStyle(
+                    ArcadeTheme.muted)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .frame(maxWidth: .infinity, minHeight: 80)
+            .foregroundStyle(.white)
+            .modifier(ArcadePanel())
         }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct ArcadeSheet<Content: View>: View {
+    let title: String
+    let subtitle: String
+    let dismiss: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(subtitle)
+                            .font(.system(.caption2, design: .rounded, weight: .heavy))
+                            .tracking(2)
+                            .foregroundStyle(ArcadeTheme.mint)
+                        Text(title).font(.system(.title, design: .rounded, weight: .black))
+                    }
+                    Spacer()
+                    Button(action: dismiss) {
+                        Image(systemName: "xmark").font(.headline.bold()).frame(width: 44, height: 44)
+                    }
+                    .background(ArcadeTheme.panel, in: Circle())
+                    .accessibilityLabel("Close")
+                }
+                .padding(.vertical, 12)
+                content()
+            }
+            .padding(24)
+        }
+        .foregroundStyle(.white)
+        .background(ArcadeTheme.ink)
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
     }
 }

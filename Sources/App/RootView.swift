@@ -22,10 +22,12 @@ struct RootView: View {
             // dying banner ("CAUGHT!" / "CRASHED!")
             if let banner = gameState.dyingText {
                 Text(banner)
-                    .font(.system(size: 52, weight: .black, design: .rounded))
-                    .foregroundColor(.red)
-                    .shadow(color: .black, radius: 8)
+                    .font(.system(size: 42, weight: .black, design: .rounded))
+                    .foregroundStyle(ArcadeTheme.gold)
+                    .padding(22)
+                    .background(ArcadeTheme.ink.opacity(0.92), in: RoundedRectangle(cornerRadius: 22))
                     .transition(.scale)
+                    .allowsHitTesting(false)
             }
         }
         .animation(.default, value: gameState.dyingText)

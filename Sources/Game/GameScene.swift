@@ -1,6 +1,6 @@
-import SceneKit
-import QuartzCore
 import Combine
+import QuartzCore
+import SceneKit
 import UIKit
 
 final class GameScene: NSObject, SCNSceneRendererDelegate {
@@ -11,6 +11,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     private(set) var state: GameState
 
     private var cameraNode = SCNNode()
+    private let menuStage = SCNNode()
     private var lastTime: TimeInterval = 0
     private var shakeT: TimeInterval = 0
     private var invulnT: TimeInterval = 0
@@ -36,15 +37,17 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { ctx in
             let colors = [
-                UIColor(red: 0.310, green: 0.639, blue: 0.910, alpha: 1).cgColor, // #4FA3E8
-                UIColor(red: 0.749, green: 0.890, blue: 1.000, alpha: 1).cgColor, // #BFE3FF
+                UIColor(red: 0.310, green: 0.639, blue: 0.910, alpha: 1).cgColor,  // #4FA3E8
+                UIColor(red: 0.749, green: 0.890, blue: 1.000, alpha: 1).cgColor,  // #BFE3FF
             ]
-            let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-                                      colors: colors as CFArray, locations: [0, 1])!
-            ctx.cgContext.drawLinearGradient(gradient,
-                                             start: CGPoint(x: 0, y: 0),
-                                             end: CGPoint(x: 0, y: size.height),
-                                             options: [])
+            let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: colors as CFArray, locations: [0, 1])!
+            ctx.cgContext.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: 0, y: 0),
+                end: CGPoint(x: 0, y: size.height),
+                options: [])
         }
     }
 
@@ -91,6 +94,33 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         scene.rootNode.addChildNode(player.node)
         scene.rootNode.addChildNode(chaser.node)
         player.node.position = SCNVector3(0, 0, 0)
+        buildMenuStage()
+    }
+
+    private func buildMenuStage() {
+        let platform = SCNNode(geometry: SCNCylinder(radius: 1.45, height: 0.14))
+        platform.geometry?.materials = [Player.material(UIColor(red: 0.09, green: 0.17, blue: 0.23, alpha: 1))]
+        platform.position.y = -0.09
+        menuStage.addChildNode(platform)
+        let ring = SCNNode(geometry: SCNTorus(ringRadius: 1.43, pipeRadius: 0.014))
+        let glow = Player.material(.systemMint)
+        glow.emission.contents = UIColor.systemMint.withAlphaComponent(0.5)
+        ring.geometry?.materials = [glow]
+        ring.position.y = -0.005
+        menuStage.addChildNode(ring)
+        scene.rootNode.addChildNode(menuStage)
+    }
+
+    private func showMenuScene() {
+        player.prepareForMenu()
+        track.root.isHidden = true
+        chaser.dismiss()
+        menuStage.isHidden = false
+        deactivateHoverboard()
+        scene.background.contents = UIColor(red: 0.035, green: 0.075, blue: 0.13, alpha: 1)
+        cameraNode.position = SCNVector3(0, 3.1, 6.4)
+        cameraNode.camera?.fieldOfView = 52
+        cameraNode.look(at: SCNVector3(0, 1.8, 0))
     }
 
     private func wireCallbacks() {
@@ -152,7 +182,9 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     private func observePhase() {
         state.$phase.sink { [weak self] phase in
             guard let self else { return }
-            if phase == .playing && self.player.isDead == false && self.state.distance == 0 {
+            if phase == .menu {
+                self.showMenuScene()
+            } else if phase == .playing && self.state.distance == 0 {
                 self.resetWorld()
             }
         }.store(in: &cancellables)
@@ -165,16 +197,13 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
 
     func resetWorld() {
         track.reset()
-        player.node.position = SCNVector3(0, 0, 0)
-        player.node.rotation = SCNVector4(0, 0, 0, 0)
-        player.isDead = false
-        player.isJumping = false
-        player.isRolling = false
-        player.lane = 1
-        player.laneLerpDone()
-        player.onTrainTop = false
-        player.setJetpackVisual(false)
-        player.setSneakersVisual(false)
+        player.prepareForRun()
+        track.root.isHidden = false
+        menuStage.isHidden = true
+        scene.background.contents = skyGradient()
+        cameraNode.camera?.fieldOfView = 58
+        cameraNode.position = SCNVector3(0, 4, 6.5)
+        cameraNode.look(at: SCNVector3(0, 1.3, -10))
         chaser.dismiss()
         speed = 6
         runUpT = 0
@@ -182,6 +211,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         distMilestone = 0
         hoverboardT = 0
         invulnT = 0
+        shakeT = 0
         camX = 0
         deactivateHoverboard()
         // SS-style intro: inspector + dog right behind, drops back + fades over ~3s
@@ -193,8 +223,16 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
 
     // MARK: - Input
 
-    func swipeLeft() { guard state.phase == .playing else { return }; player.moveLane(dir: -1); GameAudio.shared.swipe() }
-    func swipeRight() { guard state.phase == .playing else { return }; player.moveLane(dir: 1); GameAudio.shared.swipe() }
+    func swipeLeft() {
+        guard state.phase == .playing else { return }
+        player.moveLane(dir: -1)
+        GameAudio.shared.swipe()
+    }
+    func swipeRight() {
+        guard state.phase == .playing else { return }
+        player.moveLane(dir: 1)
+        GameAudio.shared.swipe()
+    }
     func swipeUp() {
         guard state.phase == .playing else { return }
         if player.jump(superSneakers: state.activePowerUps[.superSneakers] != nil) {
@@ -204,12 +242,14 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     }
     func swipeDown() {
         guard state.phase == .playing else { return }
-        if player.roll() { state.noteRoll(); GameAudio.shared.swipe() }
+        if player.roll() {
+            state.noteRoll()
+            GameAudio.shared.swipe()
+        }
     }
     func doubleTap() { activateHoverboard() }
     func tapPause() {
-        if state.phase == .playing { state.phase = .paused }
-        else if state.phase == .paused { state.phase = .playing }
+        if state.phase == .playing { state.phase = .paused } else if state.phase == .paused { state.phase = .playing }
     }
 
     func activateHoverboard() {
@@ -264,7 +304,10 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
             player.idleUpdate(dt: 1.0 / 60)
             return
         }
-        guard state.phase == .playing else { lastTime = time; return }
+        guard state.phase == .playing else {
+            lastTime = time
+            return
+        }
         var dt = lastTime == 0 ? 0 : time - lastTime
         lastTime = time
         dt = min(dt, 0.05)
@@ -278,8 +321,9 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         let jetpackOn = state.activePowerUps[.jetpack] != nil
         let magnetOn = state.activePowerUps[.magnet] != nil
 
-        track.update(dt: dt, speed: speed, player: player,
-                     magnetOn: magnetOn, jetpackOn: jetpackOn, distance: state.distance)
+        track.update(
+            dt: dt, speed: speed, player: player,
+            magnetOn: magnetOn, jetpackOn: jetpackOn, distance: state.distance)
 
         player.update(dt: dt, speed: speed, flying: jetpackOn, groundY: 0)
         if !jetpackOn && player.jetpackNode != nil { player.setJetpackVisual(false) }
@@ -317,7 +361,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         let lookY: Float = 1.3 + player.node.position.y * 0.4
         cameraNode.look(at: SCNVector3(cx, lookY, -10))
         if jetpackOn {
-            cameraNode.eulerAngles.x -= 0.15 // slight extra down-tilt while flying
+            cameraNode.eulerAngles.x -= 0.15  // slight extra down-tilt while flying
         }
     }
 }

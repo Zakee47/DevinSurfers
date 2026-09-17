@@ -11,10 +11,10 @@ final class TrackManager {
     private(set) var obstacles: [Obstacle] = []
     private(set) var collectibles: [Collectible] = []
     private var sceneryNodes: [SCNNode] = []
-    private var nextSpawnZ: Float = -20   // world-space z of next chunk (starts negative ahead)
+    private var nextSpawnZ: Float = -20  // world-space z of next chunk (starts negative ahead)
     private var distanceSincePowerUp: Float = 0
-    private var lastTunnelZ: Float = 0    // world-z where the last tunnel section spawned
-    private var chunksSpawned = 0           // chunks spawned this run
+    private var lastTunnelZ: Float = 0  // world-z where the last tunnel section spawned
+    private var chunksSpawned = 0  // chunks spawned this run
     var onTokenCollected: (() -> Void)?
     var onPowerUp: ((PowerUpKind) -> Void)?
     var onCrash: ((ObstacleKind) -> Void)?
@@ -27,7 +27,7 @@ final class TrackManager {
     private let recycleZ: Float = 15
 
     // shared materials
-    private lazy var gravel = Obstacle.mat(UIColor(red: 0.725, green: 0.682, blue: 0.604, alpha: 1)) // #B9AE9A
+    private lazy var gravel = Obstacle.mat(UIColor(red: 0.725, green: 0.682, blue: 0.604, alpha: 1))  // #B9AE9A
     private lazy var trackBed = Obstacle.mat(UIColor(white: 0.35, alpha: 1))
     private lazy var railMat = Obstacle.mat(UIColor(white: 0.55, alpha: 1), roughness: 0.35, metal: 0.7)
     private lazy var sleeperMat = Obstacle.mat(UIColor(red: 0.42, green: 0.29, blue: 0.18, alpha: 1))
@@ -58,7 +58,9 @@ final class TrackManager {
                 // colorful graffiti blocks + white tags
                 var gz = z0 + 1.5
                 while gz < z1 - 1 {
-                    let block = SCNBox(width: 0.1, height: CGFloat(Float.random(in: 0.7...1.4)), length: CGFloat(Float.random(in: 1.5...3)), chamferRadius: 0.05)
+                    let block = SCNBox(
+                        width: 0.1, height: CGFloat(Float.random(in: 0.7...1.4)),
+                        length: CGFloat(Float.random(in: 1.5...3)), chamferRadius: 0.05)
                     block.materials = [Obstacle.mat(graffitiColors.randomElement()!)]
                     let b = SCNNode(geometry: block)
                     b.position = SCNVector3(side * 5.35, Float.random(in: 0.8...1.6), gz)
@@ -174,17 +176,23 @@ final class TrackManager {
     // MARK: - Patterns
 
     private enum Pattern {
-        case coinLine, coinArc, barrierRow, lowAndHigh, trainPair, trainCenter, flatbedRun, movingTrain, signGates, empty
+        case coinLine, coinArc, barrierRow, lowAndHigh, trainPair, trainCenter, flatbedRun, movingTrain, signGates,
+            empty
     }
 
     private func pickPattern(distance: Double) -> Pattern {
         let d = distance
-        var weights: [(Pattern, Int)] = [(.coinLine, 30), (.empty, 12), (.barrierRow, 20), (.lowAndHigh, 15), (.signGates, 12)]
+        var weights: [(Pattern, Int)] = [
+            (.coinLine, 30), (.empty, 12), (.barrierRow, 20), (.lowAndHigh, 15), (.signGates, 12),
+        ]
         if d > 120 { weights += [(.coinArc, 15), (.trainPair, 12), (.trainCenter, 12), (.flatbedRun, 10)] }
         if d > 400 { weights += [(.movingTrain, 8)] }
         let total = weights.reduce(0) { $0 + $1.1 }
         var r = Int.random(in: 0..<total)
-        for (p, w) in weights { r -= w; if r < 0 { return p } }
+        for (p, w) in weights {
+            r -= w
+            if r < 0 { return p }
+        }
         return .coinLine
     }
 
@@ -195,7 +203,9 @@ final class TrackManager {
         collectibles.append(t)
     }
 
-    private func addObstacle(_ kind: ObstacleKind, lane: Int, z: Float, into parent: SCNNode, length: Float? = nil) -> Obstacle {
+    private func addObstacle(_ kind: ObstacleKind, lane: Int, z: Float, into parent: SCNNode, length: Float? = nil)
+        -> Obstacle
+    {
         let o = Obstacle(kind: kind, length: length)
         o.lane = lane
         o.node.position = SCNVector3(Self.laneX(lane), 0, z)
@@ -226,7 +236,10 @@ final class TrackManager {
         switch pattern {
         case .coinLine:
             let lane = Int.random(in: 0..<3)
-            for i in 0..<Int.random(in: 8...12) { addToken(x: Self.laneX(lane), z: z - Float(i) * 2, into: chunk); coinsAdded += 1 }
+            for i in 0..<Int.random(in: 8...12) {
+                addToken(x: Self.laneX(lane), z: z - Float(i) * 2, into: chunk)
+                coinsAdded += 1
+            }
             chunkLen = 28
         case .coinArc:
             let lane = Int.random(in: 0..<3)
@@ -240,7 +253,9 @@ final class TrackManager {
         case .barrierRow:
             let free = Int.random(in: 0..<3)
             for lane in 0..<3 where lane != free {
-                _ = addObstacle([.lowBarrier, .poleBarrier, .fullBarrier, .signpost].randomElement()!, lane: lane, z: z - 8, into: chunk)
+                _ = addObstacle(
+                    [.lowBarrier, .poleBarrier, .fullBarrier, .signpost].randomElement()!, lane: lane, z: z - 8,
+                    into: chunk)
             }
             for i in 0..<4 { addToken(x: Self.laneX(free), z: z - Float(i) * 2 - 4, into: chunk) }
             chunkLen = 22
@@ -377,8 +392,10 @@ final class TrackManager {
 
     // MARK: - Per-frame update
 
-    func update(dt: TimeInterval, speed: Double, player: Player,
-                magnetOn: Bool, jetpackOn: Bool, distance: Double) {
+    func update(
+        dt: TimeInterval, speed: Double, player: Player,
+        magnetOn: Bool, jetpackOn: Bool, distance: Double
+    ) {
         let dz = Float(speed * dt)
 
         for chunk in sceneryNodes {
@@ -392,7 +409,9 @@ final class TrackManager {
             if c.position.z + minZ > recycleZ {
                 c.removeFromParentNode()
                 sceneryNodes.remove(at: i)
-            } else { i += 1 }
+            } else {
+                i += 1
+            }
         }
         obstacles.removeAll { $0.node.parent == nil }
         collectibles.removeAll { $0.node.parent == nil }
@@ -421,6 +440,10 @@ final class TrackManager {
         chunksSpawned = 0
         lastTunnelZ = 0
         distanceSincePowerUp = 0
+        let approach = SCNNode()
+        spawnGroundChunk(from: nextSpawnZ, to: recycleZ, into: approach)
+        root.addChildNode(approach)
+        sceneryNodes.append(approach)
     }
 
     // MARK: - Collision
@@ -474,7 +497,7 @@ final class TrackManager {
             let overlapX = dx < o.halfW + hb.halfW
 
             // standing/walking on a train roof or flatbed
-            if (o.kind == .train || o.kind == .flatbed), overlapX {
+            if o.kind == .train || o.kind == .flatbed, overlapX {
                 let insideZ = oz0 < -0.4 && oz1 > 0.4
                 if insideZ {
                     let feetY = player.node.position.y
@@ -491,7 +514,9 @@ final class TrackManager {
                             player.trainTopY = o.trainTopHeight
                         }
                         continue
-                    } else if feetY >= o.trainTopHeight - 0.5, player.isJumping || player.visualY > 0 || player.onTrainTop {
+                    } else if feetY >= o.trainTopHeight - 0.5,
+                        player.isJumping || player.visualY > 0 || player.onTrainTop
+                    {
                         landedOnTrain = true
                         player.onTrainTop = true
                         player.trainTopY = o.trainTopHeight
@@ -505,7 +530,7 @@ final class TrackManager {
                     o.scored = true
                     onTrainDodged?()
                 }
-                if !o.scored, (o.kind == .lowBarrier || o.kind == .poleBarrier), wp.z > 0.5 {
+                if !o.scored, o.kind == .lowBarrier || o.kind == .poleBarrier, wp.z > 0.5 {
                     o.scored = true
                     if player.isJumping { onBarrierJumped?() }
                 }
@@ -532,7 +557,7 @@ final class TrackManager {
                 if player.onTrainTop { continue }
                 hit(o, player: player, dx: dx)
             case .flatbed:
-                continue // walkable
+                continue  // walkable
             case .movingTrain, .fullBarrier, .signpost:
                 hit(o, player: player, dx: dx)
             }
@@ -543,7 +568,7 @@ final class TrackManager {
     private func hit(_ o: Obstacle, player: Player, dx: Float) {
         let edge = dx > o.halfW - 0.15
         if edge {
-            o.node.position.z += Float(2) // push past so we don't retrigger
+            o.node.position.z += Float(2)  // push past so we don't retrigger
             player.stumble()
             onStumble?()
         } else {
