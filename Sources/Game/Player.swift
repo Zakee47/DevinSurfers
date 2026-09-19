@@ -434,7 +434,7 @@ final class Player {
         }
 
         var y = visualY + groundY
-        if onTrainTop { y = trainTopY }
+        if onTrainTop && !flying { y = trainTopY + visualY }
 
         // stumble wobble
         if isStumbling {

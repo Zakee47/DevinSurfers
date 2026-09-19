@@ -11,17 +11,16 @@ final class Collectible {
     let node = SCNNode()
     var collected = false
     private var bobT: TimeInterval = .random(in: 0...6)
-    private var baseY: Float = 0
+    private var baseY: Float?
 
     init(kind: Kind) {
         self.kind = kind
         build()
-        baseY = node.position.y
     }
 
     private static var goldMat: SCNMaterial {
         let m = SCNMaterial()
-        m.diffuse.contents = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1) // #F5C518
+        m.diffuse.contents = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)  // #F5C518
         m.metalness.contents = 0.9
         m.roughness.contents = 0.25
         m.emission.contents = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 0.35)
@@ -122,7 +121,8 @@ final class Collectible {
 
     func update(dt: TimeInterval) {
         bobT += dt
-        if baseY == 0 { baseY = node.position.y }
+        let baseY = self.baseY ?? node.position.y
+        self.baseY = baseY
         switch kind {
         case .token:
             node.rotation = SCNVector4(0, 1, 0, node.rotation.w + Float(dt * 4))

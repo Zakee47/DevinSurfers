@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 enum GamePhase {
     case menu, playing, paused, gameOver
@@ -45,18 +45,20 @@ final class GameState: ObservableObject {
     @Published var stumbleFlash: Bool = false
     @Published var newHighScore: Bool = false
     @Published var deathCause: String = "CAUGHT BY AI SLOP"
-    @Published var dyingText: String? = nil   // "CAUGHT!" / "CRASHED!" banner while dying
-    @Published var missionToast: String? = nil // bottom-left mission progress toast
+    @Published var dyingText: String? = nil  // "CAUGHT!" / "CRASHED!" banner while dying
+    @Published var missionToast: String? = nil  // bottom-left mission progress toast
     @Published var showMissions = false
     @Published var showTopRun = false
     @Published var showHowToPlay = false
-    @Published var hoverboardRequest = false // HUD button -> GameScene
+    @Published var hoverboardRequest = false  // HUD button -> GameScene
 
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private let highScoreKey = "devinsurfers.highScore"
     private let totalTokensKey = "devinsurfers.totalTokens"
     private let hoverboardsKey = "devinsurfers.hoverboards"
     private let missionsKey = "devinsurfers.missions"
+    private(set) var runID = UUID()
+    private var runEnded = true
 
     // Run stats for missions
     var runJumps: Int = 0
@@ -64,7 +66,8 @@ final class GameState: ObservableObject {
     var runTrainsDodged: Int = 0
     var runHoverboardUsed: Bool = false
 
-    init() {
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         highScore = defaults.integer(forKey: highScoreKey)
         totalTokens = defaults.integer(forKey: totalTokensKey)
         hoverboardCharges = defaults.object(forKey: hoverboardsKey) == nil ? 1 : defaults.integer(forKey: hoverboardsKey)
@@ -76,6 +79,9 @@ final class GameState: ObservableObject {
     }
 
     func startRun() {
+        runID = UUID()
+        runEnded = false
+        dyingText = nil
         score = 0
         scoreAccumulator = 0
         tokens = 0
@@ -93,7 +99,9 @@ final class GameState: ObservableObject {
         phase = .playing
     }
 
-    func endRun(cause: String) {
+    func endRun(cause: String, runID: UUID) {
+        guard self.runID == runID, !runEnded, phase == .playing || phase == .paused else { return }
+        runEnded = true
         deathCause = cause
         phase = .gameOver
         totalTokens += tokens
@@ -136,13 +144,22 @@ final class GameState: ObservableObject {
         bumpMission(kind: .collectTokens, by: 1)
     }
 
-    func noteJump() { runJumps += 1; bumpMission(kind: .jumpBarriers, by: 0) }
+    func noteJump() {
+        runJumps += 1
+        bumpMission(kind: .jumpBarriers, by: 0)
+    }
     func noteRoll() { runRolls += 1 }
     func noteBarrierJumped() { bumpMission(kind: .jumpBarriers, by: 1) }
     func noteSignRolled() { bumpMission(kind: .rollSigns, by: 1) }
-    func noteTrainDodged() { runTrainsDodged += 1; bumpMission(kind: .dodgeTrains, by: 1) }
+    func noteTrainDodged() {
+        runTrainsDodged += 1
+        bumpMission(kind: .dodgeTrains, by: 1)
+    }
     func noteHoverboardUsed() {
-        if !runHoverboardUsed { runHoverboardUsed = true; bumpMission(kind: .useHoverboard, by: 1) }
+        if !runHoverboardUsed {
+            runHoverboardUsed = true
+            bumpMission(kind: .useHoverboard, by: 1)
+        }
     }
     func noteDistanceMilestone() { bumpMission(kind: .runDistance, by: Int(distance)) }
 
@@ -151,7 +168,7 @@ final class GameState: ObservableObject {
         for i in missions.indices where missions[i].kind == kind && !missions[i].completed {
             let before = missions[i].progress
             if kind == .runDistance {
-                missions[i].progress = min(missions[i].goal, amount)
+                missions[i].progress = min(missions[i].goal, max(missions[i].progress, amount))
             } else {
                 missions[i].progress = min(missions[i].goal, missions[i].progress + amount)
             }
@@ -165,7 +182,7 @@ final class GameState: ObservableObject {
             }
             if missions[i].progress >= missions[i].goal {
                 missions[i].completed = true
-                totalTokens += 100 // mission bonus
+                totalTokens += 100  // mission bonus
             }
         }
         if changed {

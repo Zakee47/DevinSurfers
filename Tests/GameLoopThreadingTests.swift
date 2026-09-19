@@ -43,4 +43,27 @@ final class GameLoopThreadingTests: XCTestCase {
             }
         }
     }
+
+    @MainActor
+    func testDeathStopsFramesAndStaleDeathCannotEndRestartedRun() async {
+        let state = GameState()
+        let game = GameScene(state: state)
+        let renderer = SCNRenderer(device: nil, options: nil)
+        state.startRun()
+        await renderFrame(game, renderer: renderer, time: 1)
+        game.track.onCrash?(.train)
+        game.track.onCrash?(.train)
+        XCTAssertTrue(game.player.isDead)
+        let distance = state.distance
+        await renderFrame(game, renderer: renderer, time: 1.1)
+        XCTAssertEqual(state.distance, distance)
+        state.phase = .menu
+        state.startRun()
+        let settled = expectation(description: "Death callback elapsed")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { settled.fulfill() }
+        await fulfillment(of: [settled], timeout: 3)
+        XCTAssertEqual(state.phase, .playing)
+        XCTAssertNil(state.dyingText)
+        XCTAssertFalse(game.player.isDead)
+    }
 }

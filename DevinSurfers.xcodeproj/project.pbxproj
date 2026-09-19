@@ -24,6 +24,7 @@
 		E1B9FB9F2AAC8A51F484A851 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BA5073A07378DAC0E5E084 /* MenuView.swift */; };
 		E34368F6DFB039E145D7BDCD /* Chaser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D734B573F7E555145A7974C /* Chaser.swift */; };
 		E499F5B0785A538725586CDB /* DevinSurfersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206977385801880C9800394B /* DevinSurfersApp.swift */; };
+		EF0E23A94E78AD74998D7DBA /* GameplayRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */; };
 		F3D08D1123F5B8CCF0FD8C06 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F7E4B1B5A4A2BC133619EF /* Collectible.swift */; };
 		FBDFB9B6A4D59ABC4734C54A /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DA9817FEFE55FE4413A3A /* Audio.swift */; };
 		FE7EF8150E6D757CCCB59532 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CB7BC723295A6D95B2147B /* Player.swift */; };
@@ -51,6 +52,7 @@
 		6D7E6665F2735680534A67E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeTheme.swift; sourceTree = "<group>"; };
 		77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DevinSurfersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayRegressionTests.swift; sourceTree = "<group>"; };
 		8C992AE015735784F5B5841D /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		90CC366FF931C058B0B13338 /* Missions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Missions.swift; sourceTree = "<group>"; };
 		9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoopThreadingTests.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */,
+				7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */,
 				6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */,
 			);
 			path = Tests;
@@ -240,6 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				058A2BAF0658A108502BA69F /* GameLoopThreadingTests.swift in Sources */,
+				EF0E23A94E78AD74998D7DBA /* GameplayRegressionTests.swift in Sources */,
 				D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

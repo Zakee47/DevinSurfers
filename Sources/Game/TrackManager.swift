@@ -489,6 +489,8 @@ final class TrackManager {
         // obstacles
         var landedOnTrain = false
         for o in obstacles {
+            if player.isDead { break }
+            if jetpackOn { continue }
             let wp = o.node.worldPosition
             let oz0 = wp.z - o.length / 2
             let oz1 = wp.z + o.length / 2
@@ -498,22 +500,18 @@ final class TrackManager {
 
             // standing/walking on a train roof or flatbed
             if o.kind == .train || o.kind == .flatbed, overlapX {
-                let insideZ = oz0 < -0.4 && oz1 > 0.4
+                let insideZ = o.kind == .flatbed ? oz0 < 0 && oz1 > -hb.halfD : oz0 < -0.4 && oz1 > 0.4
                 if insideZ {
                     let feetY = player.node.position.y
                     if o.kind == .flatbed {
                         // run up the ramp / stay on deck
-                        landedOnTrain = true
-                        player.onTrainTop = true
-                        let rampStart = wp.z - o.length / 2 + o.rampZone
-                        if 0 > rampStart {
-                            // still on the ramp portion
-                            let t = max(0, min(1, (0 - (wp.z - o.length / 2)) / max(0.01, o.rampZone)))
-                            player.trainTopY = o.trainTopHeight * t
-                        } else {
-                            player.trainTopY = o.trainTopHeight
+                        let surfaceY = o.surfaceHeight(at: player.node.position.z)
+                        if feetY >= surfaceY - 0.5 {
+                            landedOnTrain = true
+                            player.onTrainTop = true
+                            player.trainTopY = surfaceY
+                            continue
                         }
-                        continue
                     } else if feetY >= o.trainTopHeight - 0.5,
                         player.isJumping || player.visualY > 0 || player.onTrainTop
                     {
@@ -541,8 +539,6 @@ final class TrackManager {
                 continue
             }
 
-            if jetpackOn { continue }
-
             let yOverlap = hb.maxY > o.minY + o.node.worldPosition.y && hb.minY < o.maxY + o.node.worldPosition.y
             guard yOverlap else { continue }
 
@@ -557,7 +553,7 @@ final class TrackManager {
                 if player.onTrainTop { continue }
                 hit(o, player: player, dx: dx)
             case .flatbed:
-                continue  // walkable
+                hit(o, player: player, dx: dx)
             case .movingTrain, .fullBarrier, .signpost:
                 hit(o, player: player, dx: dx)
             }

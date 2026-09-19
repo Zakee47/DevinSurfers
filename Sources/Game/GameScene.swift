@@ -142,7 +142,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
             }
         }
         track.onStumble = { [weak self] in
-            guard let self else { return }
+            guard let self, !self.player.isDead else { return }
             if self.invulnT > 0 { return }
             GameAudio.shared.stumble()
             GameAudio.shared.haptic(.heavy)
@@ -159,7 +159,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
             }
         }
         track.onCrash = { [weak self] _ in
-            guard let self else { return }
+            guard let self, !self.player.isDead else { return }
             if self.invulnT > 0 { return }
             if self.state.hoverboardActive {
                 self.deactivateHoverboard()
@@ -253,7 +253,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     }
 
     func activateHoverboard() {
-        guard state.phase == .playing, !state.hoverboardActive, state.hoverboardCharges > 0 else { return }
+        guard state.phase == .playing, !player.isDead, !state.hoverboardActive, state.hoverboardCharges > 0 else { return }
         state.hoverboardCharges -= 1
         state.hoverboardActive = true
         state.noteHoverboardUsed()
@@ -283,17 +283,18 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
     }
 
     private func die(cause: String) {
-        guard state.phase == .playing else { return }
+        guard state.phase == .playing, !player.isDead else { return }
         player.die()
         chaser.grabAt(playerX: player.node.position.x)
         GameAudio.shared.crash()
         GameAudio.shared.haptic(.heavy)
         shakeT = 0.8
         state.dyingText = cause
+        let runID = state.runID
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
-            guard let self else { return }
+            guard let self, self.state.runID == runID, self.player.isDead else { return }
             self.state.dyingText = nil
-            self.state.endRun(cause: cause == "CRASHED!" ? "CRASHED INTO AI SLOP" : "CAUGHT BY AI SLOP")
+            self.state.endRun(cause: cause == "CRASHED!" ? "CRASHED INTO AI SLOP" : "CAUGHT BY AI SLOP", runID: runID)
         }
     }
 
@@ -311,7 +312,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
             player.idleUpdate(dt: 1.0 / 60)
             return
         }
-        guard state.phase == .playing else {
+        guard state.phase == .playing, !player.isDead else {
             lastTime = time
             return
         }
@@ -331,6 +332,7 @@ final class GameScene: NSObject, SCNSceneRendererDelegate {
         track.update(
             dt: dt, speed: speed, player: player,
             magnetOn: magnetOn, jetpackOn: jetpackOn, distance: state.distance)
+        guard !player.isDead else { return }
 
         player.update(dt: dt, speed: speed, flying: jetpackOn, groundY: 0)
         if !jetpackOn && player.jetpackNode != nil { player.setJetpackVisual(false) }

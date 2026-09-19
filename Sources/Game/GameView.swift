@@ -1,5 +1,5 @@
-import SwiftUI
 import SceneKit
+import SwiftUI
 import UIKit
 
 struct GameView: View {
@@ -72,6 +72,7 @@ struct SceneViewRepresentable: UIViewRepresentable {
             root.addChild(kc)
             view.addSubview(kc.view)
             kc.didMove(toParent: root)
+            kc.becomeFirstResponder()
         } else {
             // window not ready yet; attach on next runloop
             DispatchQueue.main.async {
@@ -79,7 +80,7 @@ struct SceneViewRepresentable: UIViewRepresentable {
                     root.addChild(kc)
                     view.addSubview(kc.view)
                     kc.didMove(toParent: root)
-                    view.becomeFirstResponder()
+                    kc.becomeFirstResponder()
                 }
             }
         }

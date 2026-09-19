@@ -13,7 +13,7 @@ struct Mission: Codable, Identifiable {
 
     var title: String {
         switch kind {
-        case .collectTokens: return "Collect \(goal) ACU Tokens in one run"
+        case .collectTokens: return "Collect \(goal) ACU Tokens"
         case .jumpBarriers: return "Jump over \(goal) barriers"
         case .rollSigns: return "Roll under \(goal) signs"
         case .dodgeTrains: return "Dodge \(goal) trains"
@@ -54,7 +54,8 @@ enum MissionStore {
 
     static func load(defaults: UserDefaults, key: String) -> [Mission] {
         guard let data = defaults.data(forKey: key),
-              let m = try? JSONDecoder().decode([Mission].self, from: data) else { return [] }
+            let m = try? JSONDecoder().decode([Mission].self, from: data)
+        else { return [] }
         return m
     }
 }
