@@ -1,0 +1,516 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		058A2BAF0658A108502BA69F /* GameLoopThreadingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */; };
+		07AC4B74CA882C58D5B33BCA /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C992AE015735784F5B5841D /* GameState.swift */; };
+		09D9B48CBA9492615D2E9611 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A55E3B232F081930D0B03B /* GameScene.swift */; };
+		119C0886DBBA877A6BD98582 /* Obstacle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EA5D1EBF003BD5A5901B43 /* Obstacle.swift */; };
+		361A8033084E69807EBC0FE5 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDC461C3042CC41B6CCD1CE /* HUDView.swift */; };
+		401A8308B919624DBE2ECF05 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D82D3F36BB04EB29B4AEA65 /* RootView.swift */; };
+		4B3A123D4ACB6EB155AC2E0F /* Missions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CC366FF931C058B0B13338 /* Missions.swift */; };
+		651F151A65B884CAD9E0A74A /* Collision.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40FE6647D50B4844077983C /* Collision.swift */; };
+		A345814C9A97775AE4A53260 /* TrackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1412DCBB6F06981AEBF22069 /* TrackManager.swift */; };
+		ADC00B94021BEC17D79092B7 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D883EDB5FA255F255E10865B /* GameOverView.swift */; };
+		BE590127646439B88DF04910 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541716BC4925CE929787629 /* GameView.swift */; };
+		C49D3FBA0A71F6F42674FB7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D7E6665F2735680534A67E5 /* Assets.xcassets */; };
+		D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */; };
+		DA2E00EB3BC6A52F9459F692 /* ArcadeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */; };
+		E1B9FB9F2AAC8A51F484A851 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BA5073A07378DAC0E5E084 /* MenuView.swift */; };
+		E34368F6DFB039E145D7BDCD /* Chaser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D734B573F7E555145A7974C /* Chaser.swift */; };
+		E499F5B0785A538725586CDB /* DevinSurfersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206977385801880C9800394B /* DevinSurfersApp.swift */; };
+		EF0E23A94E78AD74998D7DBA /* GameplayRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */; };
+		F3D08D1123F5B8CCF0FD8C06 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F7E4B1B5A4A2BC133619EF /* Collectible.swift */; };
+		FBDFB9B6A4D59ABC4734C54A /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DA9817FEFE55FE4413A3A /* Audio.swift */; };
+		FE7EF8150E6D757CCCB59532 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CB7BC723295A6D95B2147B /* Player.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F8BFE1D24E57DABA816F8F1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE9FA20B9A9115E1FF25F998 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D153B58A21160E1FCF40F49B;
+			remoteInfo = DevinSurfers;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1412DCBB6F06981AEBF22069 /* TrackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackManager.swift; sourceTree = "<group>"; };
+		1D734B573F7E555145A7974C /* Chaser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chaser.swift; sourceTree = "<group>"; };
+		206977385801880C9800394B /* DevinSurfersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevinSurfersApp.swift; sourceTree = "<group>"; };
+		24F7E4B1B5A4A2BC133619EF /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
+		489DA9817FEFE55FE4413A3A /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
+		5D82D3F36BB04EB29B4AEA65 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		62EA5D1EBF003BD5A5901B43 /* Obstacle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Obstacle.swift; sourceTree = "<group>"; };
+		6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresentationTests.swift; sourceTree = "<group>"; };
+		6D7E6665F2735680534A67E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeTheme.swift; sourceTree = "<group>"; };
+		77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DevinSurfersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayRegressionTests.swift; sourceTree = "<group>"; };
+		8C992AE015735784F5B5841D /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		90CC366FF931C058B0B13338 /* Missions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Missions.swift; sourceTree = "<group>"; };
+		9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoopThreadingTests.swift; sourceTree = "<group>"; };
+		B3CB7BC723295A6D95B2147B /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		B40FE6647D50B4844077983C /* Collision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collision.swift; sourceTree = "<group>"; };
+		B541716BC4925CE929787629 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		B6C06B55B4A0302236748961 /* DevinSurfers.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DevinSurfers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CBDC461C3042CC41B6CCD1CE /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		D4BA5073A07378DAC0E5E084 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		D883EDB5FA255F255E10865B /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
+		E0A55E3B232F081930D0B03B /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		02E49D5950C30ACA17617E76 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				206977385801880C9800394B /* DevinSurfersApp.swift */,
+				5D82D3F36BB04EB29B4AEA65 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		145E7BEA77E58DCF409C50CB /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				6EE65D12D0B468CDAD48B679 /* ArcadeTheme.swift */,
+				D883EDB5FA255F255E10865B /* GameOverView.swift */,
+				CBDC461C3042CC41B6CCD1CE /* HUDView.swift */,
+				D4BA5073A07378DAC0E5E084 /* MenuView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7374B96EC8135E93AB35E848 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B6C06B55B4A0302236748961 /* DevinSurfers.app */,
+				77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8AF37F7D11B77CF9B440734C /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9FD35BEC48E2C4784926EC0F /* GameLoopThreadingTests.swift */,
+				7AA54FBCB84BF41164455FF4 /* GameplayRegressionTests.swift */,
+				6A0E2212B05E263199791057 /* PlayerPresentationTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		9983DE5768C01A21EB6D05B7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				02E49D5950C30ACA17617E76 /* App */,
+				A1D9B056AE32676510087798 /* Game */,
+				145E7BEA77E58DCF409C50CB /* UI */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		A1D9B056AE32676510087798 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				489DA9817FEFE55FE4413A3A /* Audio.swift */,
+				1D734B573F7E555145A7974C /* Chaser.swift */,
+				24F7E4B1B5A4A2BC133619EF /* Collectible.swift */,
+				B40FE6647D50B4844077983C /* Collision.swift */,
+				E0A55E3B232F081930D0B03B /* GameScene.swift */,
+				8C992AE015735784F5B5841D /* GameState.swift */,
+				B541716BC4925CE929787629 /* GameView.swift */,
+				90CC366FF931C058B0B13338 /* Missions.swift */,
+				62EA5D1EBF003BD5A5901B43 /* Obstacle.swift */,
+				B3CB7BC723295A6D95B2147B /* Player.swift */,
+				1412DCBB6F06981AEBF22069 /* TrackManager.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		AB18ECA73719E7CE8E31478E = {
+			isa = PBXGroup;
+			children = (
+				CEBEB37C742A432B6F7DCF77 /* Resources */,
+				9983DE5768C01A21EB6D05B7 /* Sources */,
+				8AF37F7D11B77CF9B440734C /* Tests */,
+				7374B96EC8135E93AB35E848 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CEBEB37C742A432B6F7DCF77 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6D7E6665F2735680534A67E5 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2F4AC644B165C22663901D72 /* DevinSurfersTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E55CC9AC3C426E7BA2587141 /* Build configuration list for PBXNativeTarget "DevinSurfersTests" */;
+			buildPhases = (
+				4AFD8224FB1BC81C2249A942 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A766BB71FF69DF1651B5B12E /* PBXTargetDependency */,
+			);
+			name = DevinSurfersTests;
+			packageProductDependencies = (
+			);
+			productName = DevinSurfersTests;
+			productReference = 77C69142DD428C8DD8373929 /* DevinSurfersTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D153B58A21160E1FCF40F49B /* DevinSurfers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74D26FF16089B9029F163A18 /* Build configuration list for PBXNativeTarget "DevinSurfers" */;
+			buildPhases = (
+				546B0BEB98DD6BBE860A5274 /* Sources */,
+				CA03063B6C970F24DBB6B78E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DevinSurfers;
+			packageProductDependencies = (
+			);
+			productName = DevinSurfers;
+			productReference = B6C06B55B4A0302236748961 /* DevinSurfers.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DE9FA20B9A9115E1FF25F998 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D153B58A21160E1FCF40F49B = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 0BA4D0624AFCEDDBF79FF161 /* Build configuration list for PBXProject "DevinSurfers" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = AB18ECA73719E7CE8E31478E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 7374B96EC8135E93AB35E848 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D153B58A21160E1FCF40F49B /* DevinSurfers */,
+				2F4AC644B165C22663901D72 /* DevinSurfersTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CA03063B6C970F24DBB6B78E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C49D3FBA0A71F6F42674FB7B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4AFD8224FB1BC81C2249A942 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				058A2BAF0658A108502BA69F /* GameLoopThreadingTests.swift in Sources */,
+				EF0E23A94E78AD74998D7DBA /* GameplayRegressionTests.swift in Sources */,
+				D5E09ADF10C199C28FE67E16 /* PlayerPresentationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		546B0BEB98DD6BBE860A5274 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA2E00EB3BC6A52F9459F692 /* ArcadeTheme.swift in Sources */,
+				FBDFB9B6A4D59ABC4734C54A /* Audio.swift in Sources */,
+				E34368F6DFB039E145D7BDCD /* Chaser.swift in Sources */,
+				F3D08D1123F5B8CCF0FD8C06 /* Collectible.swift in Sources */,
+				651F151A65B884CAD9E0A74A /* Collision.swift in Sources */,
+				E499F5B0785A538725586CDB /* DevinSurfersApp.swift in Sources */,
+				ADC00B94021BEC17D79092B7 /* GameOverView.swift in Sources */,
+				09D9B48CBA9492615D2E9611 /* GameScene.swift in Sources */,
+				07AC4B74CA882C58D5B33BCA /* GameState.swift in Sources */,
+				BE590127646439B88DF04910 /* GameView.swift in Sources */,
+				361A8033084E69807EBC0FE5 /* HUDView.swift in Sources */,
+				E1B9FB9F2AAC8A51F484A851 /* MenuView.swift in Sources */,
+				4B3A123D4ACB6EB155AC2E0F /* Missions.swift in Sources */,
+				119C0886DBBA877A6BD98582 /* Obstacle.swift in Sources */,
+				FE7EF8150E6D757CCCB59532 /* Player.swift in Sources */,
+				401A8308B919624DBE2ECF05 /* RootView.swift in Sources */,
+				A345814C9A97775AE4A53260 /* TrackManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A766BB71FF69DF1651B5B12E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D153B58A21160E1FCF40F49B /* DevinSurfers */;
+			targetProxy = F8BFE1D24E57DABA816F8F1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		339AFCC337B328FF7FE89260 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.DevinSurfersTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevinSurfers.app/DevinSurfers";
+			};
+			name = Release;
+		};
+		3BA491D6A3C3093C9C014853 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Generated/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.devinsurfers;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		7C7E91067AF693A1E8832E1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		7DF131439A0671512A1584A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		85CDFFCA53979E6D219138CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.DevinSurfersTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DevinSurfers.app/DevinSurfers";
+			};
+			name = Debug;
+		};
+		9B3D93C24C213CE9F03E305E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Generated/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.zakee47.devinsurfers;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0BA4D0624AFCEDDBF79FF161 /* Build configuration list for PBXProject "DevinSurfers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DF131439A0671512A1584A1 /* Debug */,
+				7C7E91067AF693A1E8832E1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		74D26FF16089B9029F163A18 /* Build configuration list for PBXNativeTarget "DevinSurfers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B3D93C24C213CE9F03E305E /* Debug */,
+				3BA491D6A3C3093C9C014853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E55CC9AC3C426E7BA2587141 /* Build configuration list for PBXNativeTarget "DevinSurfersTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85CDFFCA53979E6D219138CE /* Debug */,
+				339AFCC337B328FF7FE89260 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DE9FA20B9A9115E1FF25F998 /* Project object */;
+}

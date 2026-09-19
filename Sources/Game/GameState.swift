@@ -1,0 +1,196 @@
+import Combine
+import Foundation
+
+enum GamePhase {
+    case menu, playing, paused, gameOver
+}
+
+enum PowerUpKind: String, CaseIterable {
+    case magnet, jetpack, superSneakers, multiplier2x, hoverboardPickup
+
+    var duration: TimeInterval {
+        switch self {
+        case .magnet: return 10
+        case .jetpack: return 8
+        case .superSneakers: return 10
+        case .multiplier2x: return 15
+        case .hoverboardPickup: return 0
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .magnet: return "Magnet"
+        case .jetpack: return "Jetpack"
+        case .superSneakers: return "Sneakers"
+        case .multiplier2x: return "2x Score"
+        case .hoverboardPickup: return "Hoverboard"
+        }
+    }
+}
+
+final class GameState: ObservableObject {
+    @Published var phase: GamePhase = .menu
+    @Published var score: Int = 0
+    @Published var tokens: Int = 0
+    @Published var distance: Double = 0
+    @Published var multiplier: Int = 1
+    @Published var activePowerUps: [PowerUpKind: TimeInterval] = [:]
+    @Published var hoverboardActive: Bool = false
+    @Published var hoverboardCharges: Int = 1
+    @Published var highScore: Int = 0
+    @Published var totalTokens: Int = 0
+    @Published var missions: [Mission] = []
+    @Published var chaserPresent: Bool = false
+    @Published var stumbleFlash: Bool = false
+    @Published var newHighScore: Bool = false
+    @Published var deathCause: String = "CAUGHT BY AI SLOP"
+    @Published var dyingText: String? = nil  // "CAUGHT!" / "CRASHED!" banner while dying
+    @Published var missionToast: String? = nil  // bottom-left mission progress toast
+    @Published var showMissions = false
+    @Published var showTopRun = false
+    @Published var showHowToPlay = false
+    @Published var hoverboardRequest = false  // HUD button -> GameScene
+
+    private let defaults: UserDefaults
+    private let highScoreKey = "devinsurfers.highScore"
+    private let totalTokensKey = "devinsurfers.totalTokens"
+    private let hoverboardsKey = "devinsurfers.hoverboards"
+    private let missionsKey = "devinsurfers.missions"
+    private(set) var runID = UUID()
+    private var runEnded = true
+
+    // Run stats for missions
+    var runJumps: Int = 0
+    var runRolls: Int = 0
+    var runTrainsDodged: Int = 0
+    var runHoverboardUsed: Bool = false
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        highScore = defaults.integer(forKey: highScoreKey)
+        totalTokens = defaults.integer(forKey: totalTokensKey)
+        hoverboardCharges = defaults.object(forKey: hoverboardsKey) == nil ? 1 : defaults.integer(forKey: hoverboardsKey)
+        missions = MissionStore.load(defaults: defaults, key: missionsKey)
+        if missions.isEmpty {
+            missions = MissionStore.freshMissions()
+            MissionStore.save(missions, defaults: defaults, key: missionsKey)
+        }
+    }
+
+    func startRun() {
+        runID = UUID()
+        runEnded = false
+        dyingText = nil
+        score = 0
+        scoreAccumulator = 0
+        tokens = 0
+        distance = 0
+        multiplier = 1
+        activePowerUps = [:]
+        hoverboardActive = false
+        chaserPresent = false
+        stumbleFlash = false
+        newHighScore = false
+        runJumps = 0
+        runRolls = 0
+        runTrainsDodged = 0
+        runHoverboardUsed = false
+        phase = .playing
+    }
+
+    func endRun(cause: String, runID: UUID) {
+        guard self.runID == runID, !runEnded, phase == .playing || phase == .paused else { return }
+        runEnded = true
+        deathCause = cause
+        phase = .gameOver
+        totalTokens += tokens
+        if score > highScore {
+            highScore = score
+            newHighScore = true
+        }
+        // missions progress is ticked live; final distance tick happens in tickMissions
+        persist()
+    }
+
+    func persist() {
+        defaults.set(highScore, forKey: highScoreKey)
+        defaults.set(totalTokens, forKey: totalTokensKey)
+        defaults.set(hoverboardCharges, forKey: hoverboardsKey)
+        MissionStore.save(missions, defaults: defaults, key: missionsKey)
+    }
+
+    private var scoreAccumulator: Double = 0
+
+    // Called by GameScene each frame / on events
+    func tick(dt: TimeInterval, speed: Double) {
+        distance += speed * dt
+        let mult = activePowerUps[.multiplier2x] != nil ? 2 : 1
+        multiplier = mult
+        scoreAccumulator += (speed * dt) * Double(mult)
+        score += Int(scoreAccumulator)
+        scoreAccumulator = scoreAccumulator.truncatingRemainder(dividingBy: 1)
+        var expired: [PowerUpKind] = []
+        for (k, v) in activePowerUps {
+            let nv = v - dt
+            if nv <= 0 { expired.append(k) } else { activePowerUps[k] = nv }
+        }
+        for k in expired { activePowerUps.removeValue(forKey: k) }
+    }
+
+    func collectToken() {
+        tokens += 1
+        score += 5 * multiplier
+        bumpMission(kind: .collectTokens, by: 1)
+    }
+
+    func noteJump() {
+        runJumps += 1
+        bumpMission(kind: .jumpBarriers, by: 0)
+    }
+    func noteRoll() { runRolls += 1 }
+    func noteBarrierJumped() { bumpMission(kind: .jumpBarriers, by: 1) }
+    func noteSignRolled() { bumpMission(kind: .rollSigns, by: 1) }
+    func noteTrainDodged() {
+        runTrainsDodged += 1
+        bumpMission(kind: .dodgeTrains, by: 1)
+    }
+    func noteHoverboardUsed() {
+        if !runHoverboardUsed {
+            runHoverboardUsed = true
+            bumpMission(kind: .useHoverboard, by: 1)
+        }
+    }
+    func noteDistanceMilestone() { bumpMission(kind: .runDistance, by: Int(distance)) }
+
+    private func bumpMission(kind: MissionKind, by amount: Int) {
+        var changed = false
+        for i in missions.indices where missions[i].kind == kind && !missions[i].completed {
+            let before = missions[i].progress
+            if kind == .runDistance {
+                missions[i].progress = min(missions[i].goal, max(missions[i].progress, amount))
+            } else {
+                missions[i].progress = min(missions[i].goal, missions[i].progress + amount)
+            }
+            if missions[i].progress != before {
+                changed = true
+                missionToast = "Mission: \(missions[i].title)  \(missions[i].progress)/\(missions[i].goal)"
+                let captured = missionToast
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+                    if self?.missionToast == captured { self?.missionToast = nil }
+                }
+            }
+            if missions[i].progress >= missions[i].goal {
+                missions[i].completed = true
+                totalTokens += 100  // mission bonus
+            }
+        }
+        if changed {
+            // rotate completed missions out, new ones in
+            for i in missions.indices where missions[i].completed {
+                missions[i] = MissionStore.randomMission(excluding: missions.map { $0.kind })
+            }
+            MissionStore.save(missions, defaults: defaults, key: missionsKey)
+        }
+    }
+}
